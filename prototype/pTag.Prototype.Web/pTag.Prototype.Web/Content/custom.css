@@ -1,0 +1,66 @@
+﻿
+
+html, body, .mdl-grid {
+    height: 100%;
+}
+
+.mdl-js-ripple-effect {
+    z-index: 900;
+}
+
+.mdl-ptag-primary-action-group .mdl-button {
+    margin-bottom: 7.5px;
+}
+
+.mdl-ptag-primary-action-group .mdl-button--mini-fab {
+    margin-left: 7.5px;
+}
+
+.mdl-ptag-mini-fab-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100px;
+    display: inline-block;
+    top: 10px;
+    position: relative;
+    left: 10px;
+    height: 30px;
+    padding-top: 3px;
+}
+
+
+
+
+
+
+#primary-action
+{
+  position: fixed; 
+  bottom: 50px; 
+  right: 100px;
+  display: block;
+  
+}
+
+#primary-mini-fabs
+{
+  position: fixed; 
+  bottom: 110px; 
+  right: 0;
+  width: 148px;
+  display: block;
+  z-index: 900;
+}
+
+#primary-mini-fabs .button-wrapper {
+  display: block;
+  margin-bottom: 10px; 
+}
+
+.mdl-ptag-mini-fab-label .frame {
+    border: 1px solid #dddddd;
+    padding: 4px 8px 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 1.5px 0 rgba(0,0,0,.05),0 1px 1px 0 rgba(0,0,0,.05);
+}

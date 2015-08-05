@@ -1,0 +1,43 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="description" content="">
+
+        <title>pTag Prototype</title>
+
+        <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+        <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
+             <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-deep_purple.min.css" /> 
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        @Styles.Render("~/Content/css")
+    </head>
+    <body>
+    <!--div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--hide-phone"></div>
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone ptag-primary-container">RenderBody()</div>
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--2-col-tablet mdl-cell--hide-phone"></div>
+    </!--div>
+@RenderBody()
+        
+
+    @RenderSection("scripts", required: false)
+
+    <script>
+        $.pulldown = function() {
+            $('.pull-down').each(function () {
+                $(this).css('margin-top', $(this).parent().height() - $(this).height())
+            });
+        }
+
+        $(window).on('resize', $.pulldown);
+
+        $.pulldown();
+    </script>
+    </body>
+</html>
