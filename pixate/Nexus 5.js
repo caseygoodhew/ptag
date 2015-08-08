@@ -34,8 +34,21 @@ var pTag = {
 		pTag.apply(layer, config, 'animation', 'children', 'name');
 	},
 
-	applyAnimation: function(layer, animation) {
-		// do something
+	applyAnimation: function(layer, config) {
+		
+		var animation;
+
+		switch (config.type) {
+			case 'move':
+				animation = createMoveAnimation(layer);
+				break;
+		}
+
+		var referenceLayer = (config.basedOn.layer === 'screen') ? Screen : getLayerByName(config.basedOn.layer);
+		animation.basedOn = referenceLayer[config.basedOn.interaction];
+		animation.animates = config.animates || AnimationMode.withDuration;
+
+		pTag.apply(animation, config, 'basedOn', 'type');
 	},
 
 	write: function(config) {
@@ -52,6 +65,7 @@ var pTag = {
 
 		return layer;
 	}
+
 };
 
 pTag.write({
@@ -60,13 +74,19 @@ pTag.write({
 	y: -300,
 	width: 50,
 	height: 100,
+	backgroundColor: 'rgb(36, 37, 38)',
 	children: [{
 	    name: 'show mini fab',
+	    width: 50,
+	    height: 10,
+	    backgroundColor: 'rgb(255, 255, 255)',
 	    animation: [{
 	        type: 'move',
 	        name: 'Initial Move with Delay',
+	        duration: 0,
+	        delay: 5,
 	        basedOn: { layer: 'screen', interaction: 'loaded' },
-	        toX: 100
+	        toX: 1
 	    }]
 	}]
 });
@@ -74,13 +94,3 @@ pTag.write({
 
 
 
-
-
-
-var setAnimationDefaults = function(config) {
-	config.name = config.type;
-	config.enabled = config.enabled !== false;
-	config.animates = config.animates || AnimationMode.withDuration;
-
-	return config;
-}

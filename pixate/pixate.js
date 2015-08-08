@@ -14,7 +14,16 @@ var nestLayers = function(layer, child) {
 	}
 };
 
+var createMoveAnimation = function(layer) {
+	if (check.isLayer(layer, 'createMoveAnimation failed. Argument "layer" is not a layer.')) {
+		writeToConsole('createMoveAnimation(\''+layer.name+'\')');
+	}
 
+	return { type: 'move', isAnimation: true };
+}
+
+
+// utility methods
 var check = {
 	isText: function(text, message) {
 		return check.validate(typeof(text) === 'string', message);
@@ -22,6 +31,10 @@ var check = {
 
 	isLayer: function(layer, message) {
 		return check.validate(typeof(layer) === 'object' && layer.isLayer, message);
+	},
+
+	isAnimation: function(animation, message) {
+		return check.validate(typeof(animation) === 'object' && animation.isAnimation, message);
 	},
 
 	validate: function(result, message) {
@@ -32,11 +45,13 @@ var check = {
 	}
 };
 
+// PRIVATE: ui management
 var stats = {
 	el: document.getElementById('target'),
 	count: 1
 };
 
+// PRIVATE: dump the output
 var writeToConsole = function(msg, fail) {
 	var el = document.createElement('div');
 	
