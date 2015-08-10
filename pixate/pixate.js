@@ -1,30 +1,36 @@
-var Pixate = function(enableDiagnostics) {
+var Pixate = function(executor) {
 	
 	var api = {
 		getSelectedLayer: {
-			returns: 'Layer or null'
+			returns: 'Layer or null',
+			notSupported: true
 		},
 		
 		getSelectedLayers: {
-			returns: 'Layer[]'
+			returns: 'Layer[]',
+			notSupported: true
 		},
 		
 		getSelectedAnimations: {
-			returns: 'Animation[]'
+			returns: 'Animation[]',
+			notSupported: true
 		},
 		
 		getLayerByName: {
 			parameterNames: ['name'],
-			returns: 'Layer or null'
+			returns: 'Layer or null',
+			notSupported: true
 		},
 		
 		getAllLayers: {
-			returns: 'Layer[]'
+			returns: 'Layer[]',
+			notSupported: true
 		},
 		
 		getAssetByName: {
 			parameterNames: ['name'],
-			returns: 'Asset or null'
+			returns: 'Asset or null',
+			notSupported: true
 		},
 
 		createLayer: {
@@ -44,21 +50,55 @@ var Pixate = function(enableDiagnostics) {
 		addAnimationCondition: {
 			parameterNames: ['animation'],
 			returns: 'AnimationCondition'
+		},
+
+		createDragInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createTapInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createDoubleTapInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createLongPressInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createRotateInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createPinchInteraction: {
+			parameterNames: ['layer'],
+			returns: 'Interaction'
+		},
+
+		createScrollInteraction{
+			parameterNames: ['layer'],
+			returns: 'Interaction'
 		}
 	};
-
 
 	enableDiagnostics = !!enableDiagnostics;
 
 	var assertions = [];
-	var commandOutput = [];
+	var commands = [];
 	var layers = [];
 
 	var registerCommand = function(command, arguments) {
-		commandOutput.push({
+		commands.push({
 			command: command,
 			arguments: arguments || [],
-			assertions: assertions || [];
+			assertions: assertions || []
 		});
 
 		assertions = [];
@@ -74,15 +114,11 @@ var Pixate = function(enableDiagnostics) {
 		return null;
 	}
 
-	var addLayer = function(nameOrLayer) {
-		var layer = nameOrLayer;
-
+	var addLayer = function(name) {
 		if (typeof nameOrLayer === 'string'){
-			layer = { name: nameOrLayer };
-		} else if (typeof nameOrLayer !== 'object') {
-			Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not type string or object');
-		} else if (!layer.name) {
-			Pixate.Assert.assert(false, 'nameOrLayer', 'Object representing Layer does not have a name');
+			layer = { name: name };
+		} else {
+			Pixate.Assert.assert(false, 'name', 'Argument is not type string');
 		}
 
 		layers.push({
@@ -94,39 +130,15 @@ var Pixate = function(enableDiagnostics) {
 
 	return {
 		
-		getLayerByName: function(name) {
-			Pixate.Assert.isText(name, 'name');
-
-			if (!findLayer(name)) {
-				addLayer(name);
-			}
-			
-			return registerCommand('getLayerByName', [name]);
-		},
-
-		getAllLayers: function() {
-			return registerCommand('getAllLayers', [name]);
-		},
-
-		getAssetByName: function(name) {
-			Pixate.Assert.isText(name, 'name');
-
-			return registerCommand('getAssetByName', [name]);
-		},
-
 		createLayer: function(name, config) {
 			Pixate.Assert.isText(name, 'name');
 
-			var layer = findLayer(name);
+			var layer = addLayer(name);
 
-			if (!layer) {
-				layer = addLayer(name);
-				layer.isCreated = true;
-			}
-
-			var result = registerCommand('createLayer', [name]);
+			registerCommand('createLayer', [name]);
+			
 			if (config) {
-				result = registerCommand('setLayerConfig', [layer, config]);
+				registerCommand('setLayerConfig', [layer, config]);
 			}
 		},
 
@@ -141,20 +153,6 @@ var Pixate = function(enableDiagnostics) {
 			Pixate.Assert.isAnimation(animation, 'animation');
 
 			return registerCommand('addAnimationCondition', [animation])	;
-		},
-
-		Editor: {
-			getSelectedLayer: function() {
-				return registerCommand('getSelectedLayer');
-			},
-
-			getSelectedLayers: function() {
-				return registerCommand('getSelectedLayers');
-			},
-
-			getSelectedAnimations: function() {
-				return registerCommand('getSelectedAnimations');
-			}
 		},
 
 		Assert: {
@@ -177,19 +175,87 @@ var Pixate = function(enableDiagnostics) {
 					message: message
 				});
 			}
+		},
+
+		Executor: {
+			logger: function(commands) {
+				
+				var logCommand = function() {
+
+				}
+
+
+				for (var i = 0; i < commands.length; i++) {
+
+				}
+			}
 		}
 	}
-}();
+};
+
+Pixate.Executor.Logger = function(config) {
+
+	var targetEl = document.getElementById(config.targetId);
+	var count = 1;
+
+	return {
+		execute: function(commands, api) {
+			for (var i = 0; i < commands.length; i++) {
+				var command = commands[i];
+
+				var commandBlockTarget = document.createElement('div');
+				commandBlockTarget.className = 'command-block';
+				targetEl.appendChild(commandBlockTarget);
+
+				var markup = [];
+				markup.push('<div class="command">');
+					
+					markup.push('<span class="command-name">' + command.command + '</span>');
+					markup.push('<span class="command-bracket">(</span>');
+					
+					var argumentsMarkup = [];
+					for (var j = 0; j < (api[command.command].parameterNames||[]), j++) {
+						argumentsMarkup.join('<span class="command-argument">'+api[command.command].parameterNames[j]+'</span>');
+					}
+					
+					markup.push(argumentsMarkup.join('<span class="command-comma">, </span>');
+					markup.push('<span class="command-bracket">)</span>');
+
+					markup.push('<span class="command-comment"> // ');
+
+						var argumentsMarkup = [];
+						for (var j = 0; j < (command.arguments||[]), j++) {
+							argumentsMarkup.join('<span class="command-argument">'+command.arguments[j]+'</span>');
+						}
+					
+					markup.push('</span>');					
+
+				markup.push('</div>')
+
+				markup.push('<div class="assertions">');
+
+					var hasFailure = false;
+
+					for (var j = 0; j < (command.assertions||[]), j++) {
+						var assertion = command.assertions[j];
+						hasFailure = hasFailure || !assertion.result;
+						
+						markup.push('<div class="assertion' + assertions.result ? '' : ' fail' + '">');
+							markup.push('<span class="assertion-argument">' + assertion.argument + '</span>');
+							markup.push('<span class="assertion-spacing"> - </span>');
+							markup.push('<span class="assertion-message">' + assertion.result ? 'OK' : assertion.message + '</span>');
+						markup.push('</div>')
+					}
+
+				commandBlockTarget.innerHTML = markup.join(' ');
+			}
+		}
+
+	};
+}
 
 
-
-
-
-
-
-
-
-
+/*
 var createLayer = function(name) {
 	if (check.isText(name, 'createLayer failed. Argument "name" is not a string.')) {
 		writeToConsole('createLayer("'+name+'")');
@@ -265,3 +331,4 @@ var writeToConsole = function(msg, fail) {
 
 	stats.el.appendChild(el);
 };
+*/
