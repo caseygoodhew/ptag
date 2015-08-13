@@ -2,34 +2,7 @@
  * 
  ***************************************************************************************/
 var pTag = {
-	each: function(array, fn) {
-		
-		array = array || [];
-
-		for (var i = 0; i < array.length; i++) {
-			fn.call(array, array[i], i);
-		}
-	},
-		/* function(dest, source, params[] exclude) */
-	apply: function() {
 	
-		var dest = arguments[0];
-		var source = arguments[1];
-		var exclude = {};
-			
-		for (var i = 2; i < arguments.length; i++) {
-			exclude[arguments[i]] = true;
-		}
-
-		for (var x in source) {
-			if (!exclude[x]) {
-				dest[x] = source[x];
-			}
-		}
-
-		return dest;
-	},
-
 	applyToLayer: function(layer, config) {
 		pTag.apply(layer, config, 'animation', 'children', 'name');
 	},
@@ -65,7 +38,6 @@ var pTag = {
 
 		return layer;
 	}
-
 };
 
 pTag.write({

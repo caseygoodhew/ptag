@@ -1,107 +1,18 @@
 var Pixate = function(executor) {
 	
-	var api = {
-		getSelectedLayer: {
-			returns: 'Layer or null',
-			notSupported: true
-		},
-		
-		getSelectedLayers: {
-			returns: 'Layer[]',
-			notSupported: true
-		},
-		
-		getSelectedAnimations: {
-			returns: 'Animation[]',
-			notSupported: true
-		},
-		
-		getLayerByName: {
-			parameterNames: ['name'],
-			returns: 'Layer or null',
-			notSupported: true
-		},
-		
-		getAllLayers: {
-			returns: 'Layer[]',
-			notSupported: true
-		},
-		
-		getAssetByName: {
-			parameterNames: ['name'],
-			returns: 'Asset or null',
-			notSupported: true
-		},
-
-		createLayer: {
-			parameterNames: ['name'],
-			returns: 'Layer'
-		},
-
-		setLayerConfig: {
-			parameterNames: ['layer', 'config'],
-			isCustom: true
-		},
-
-		nestLayer: {
-			parameterNames: ['target', 'source']
-		},
-
-		addAnimationCondition: {
-			parameterNames: ['animation'],
-			returns: 'AnimationCondition'
-		},
-
-		createDragInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createTapInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createDoubleTapInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createLongPressInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createRotateInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createPinchInteraction: {
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		},
-
-		createScrollInteraction{
-			parameterNames: ['layer'],
-			returns: 'Interaction'
-		}
-	};
-
-	enableDiagnostics = !!enableDiagnostics;
-
 	var assertions = [];
-	var commands = [];
 	var layers = [];
 
-	var registerCommand = function(command, arguments) {
-		commands.push({
+	var executeCommand = function(command, arguments) {
+		var command = {
 			command: command,
 			arguments: arguments || [],
 			assertions: assertions || []
-		});
+		};
 
 		assertions = [];
+
+		return executor.executeOne(command);
 	};
 
 	var findLayer = function(name) {
@@ -114,7 +25,10 @@ var Pixate = function(executor) {
 		return null;
 	}
 
-	var addLayer = function(name) {
+	var registerLayer = function(name) {
+		
+		var layer;
+
 		if (typeof nameOrLayer === 'string'){
 			layer = { name: name };
 		} else {
@@ -133,26 +47,28 @@ var Pixate = function(executor) {
 		createLayer: function(name, config) {
 			Pixate.Assert.isText(name, 'name');
 
-			var layer = addLayer(name);
+			registerLayer(name);
 
-			registerCommand('createLayer', [name]);
+			var result = executeCommand('createLayer', [name]);
 			
-			if (config) {
-				registerCommand('setLayerConfig', [layer, config]);
+			if (typeof(config) === 'Object') {
+				executeCommand('setLayerConfig', [result, config]);
 			}
+
+			return result;
 		},
 
 		nestLayer: function(target, source) {
 			Pixate.Assert.isLayer(target, 'target');
 			Pixate.Assert.isLayer(source, 'source');
 
-			registerCommand('createLayer', [target, source]);
+			return executeCommand('createLayer', [target, source]);
 		},
 
 		addAnimationCondition: function(animation) {
 			Pixate.Assert.isAnimation(animation, 'animation');
 
-			return registerCommand('addAnimationCondition', [animation])	;
+			return executeCommand('addAnimationCondition', [animation]);
 		},
 
 		Assert: {
@@ -175,23 +91,56 @@ var Pixate = function(executor) {
 					message: message
 				});
 			}
-		},
-
-		Executor: {
-			logger: function(commands) {
-				
-				var logCommand = function() {
-
-				}
-
-
-				for (var i = 0; i < commands.length; i++) {
-
-				}
-			}
 		}
 	}
 };
+
+Pixate.apply = function(target, source) {
+	
+	for (var x in source) {
+		dest[x] = source[x];
+	}
+
+	return dest;
+};
+
+Pixate.apply(Pixate, {
+	
+	isArray = function(object) {
+		return Object.prototype.toString.call(object) === '[object Array]';
+	},
+
+	exclude: function(source, paramExclude) {
+
+		var exclude = {};
+
+		for (var i = 1; i < arguments.length; i++) {
+			exclude[arguments[i]] = true;
+		}
+
+		var result = {};
+
+		for (var x in source) {
+			if (!exclude[x]) {
+				result[x] = source[x];
+			}
+		}
+
+		return result;
+	},
+
+	each: function(array, fn) {
+		
+		array = array == null ? [] : Pixate.isArray(array) ? array : [array];
+
+		for (var i = 0; i < array.length; i++) {
+			fn.call(array, array[i], i);
+		}
+	}
+});
+	
+
+Pixate.Executor = {};
 
 Pixate.Executor.Logger = function(config) {
 
@@ -199,61 +148,189 @@ Pixate.Executor.Logger = function(config) {
 	var count = 1;
 
 	return {
-		execute: function(commands, api) {
-			for (var i = 0; i < commands.length; i++) {
-				var command = commands[i];
+		executeMany: function(commands) {
+			Pixate.each(commands, function(command) {
+				command.result = this.executeOne(command);
+			});
+		},
 
-				var commandBlockTarget = document.createElement('div');
-				commandBlockTarget.className = 'command-block';
-				targetEl.appendChild(commandBlockTarget);
+		executeOne: function(command) {
 
-				var markup = [];
-				markup.push('<div class="command">');
-					
-					markup.push('<span class="command-name">' + command.command + '</span>');
-					markup.push('<span class="command-bracket">(</span>');
-					
-					var argumentsMarkup = [];
-					for (var j = 0; j < (api[command.command].parameterNames||[]), j++) {
-						argumentsMarkup.join('<span class="command-argument">'+api[command.command].parameterNames[j]+'</span>');
+			var commandBlockTarget = document.createElement('div');
+			commandBlockTarget.className = 'command-block';
+			
+			var markup = [];
+			markup.push('<div class="command">');
+				
+				markup.push('<span class="command-name">' + command.command + '</span>');
+				markup.push('<span class="command-bracket">(</span>');
+				
+				Pixate.each(Pixate.Api[command.command].parameterNames, function(parameterName, index) {
+					if (index) {
+						markup.push('<span class="command-comma">, </span>');
 					}
-					
-					markup.push(argumentsMarkup.join('<span class="command-comma">, </span>');
-					markup.push('<span class="command-bracket">)</span>');
 
-					markup.push('<span class="command-comment"> // ');
+					markup.push('<span class="command-argument">'+parameterName+'</span>');
+				});
+				
+				markup.push('<span class="command-bracket">)</span>');
 
-						var argumentsMarkup = [];
-						for (var j = 0; j < (command.arguments||[]), j++) {
-							argumentsMarkup.join('<span class="command-argument">'+command.arguments[j]+'</span>');
+				markup.push('<span class="command-comment"> // ');
+
+					Pixate.each(command.arguments, function(argument, index) {
+						if (index) {
+							markup.push('<span class="command-comma">, </span>');
 						}
+
+						markup.push('<span class="command-argument">'+argument+'</span>');
+					});
+				
+				markup.push('</span>');					
+
+			markup.push('</div>')
+
+			markup.push('<div class="assertions">');
+
+				var hasFailure = false;
+
+				Pixate.each(assertions, function(assesrtion) {
+					hasFailure = hasFailure || !assertion.result;
 					
-					markup.push('</span>');					
+					markup.push('<div class="assertion' + assertions.result ? '' : ' fail' + '">');
+						markup.push('<span class="assertion-argument">' + assertion.argument + '</span>');
+						markup.push('<span class="assertion-spacing"> - </span>');
+						markup.push('<span class="assertion-message">' + assertion.result ? 'OK' : assertion.message + '</span>');
+					markup.push('</div>')
+				});
 
-				markup.push('</div>')
+			commandBlockTarget.innerHTML = markup.join(' ');
 
-				markup.push('<div class="assertions">');
-
-					var hasFailure = false;
-
-					for (var j = 0; j < (command.assertions||[]), j++) {
-						var assertion = command.assertions[j];
-						hasFailure = hasFailure || !assertion.result;
-						
-						markup.push('<div class="assertion' + assertions.result ? '' : ' fail' + '">');
-							markup.push('<span class="assertion-argument">' + assertion.argument + '</span>');
-							markup.push('<span class="assertion-spacing"> - </span>');
-							markup.push('<span class="assertion-message">' + assertion.result ? 'OK' : assertion.message + '</span>');
-						markup.push('</div>')
-					}
-
-				commandBlockTarget.innerHTML = markup.join(' ');
-			}
+			targetEl.appendChild(commandBlockTarget);
 		}
 
 	};
 }
 
+Pixate.Executor.Immediate = function(config) {
+	return {
+		executeMany: function(command) {
+			Pixate.each(commands, function(command) {
+				command.result = this.executeOne(command, api);
+			});
+		},
+
+		executeOne: function(command) {
+			var func = Pixate.Api[command.command].custom ? eval(command.command);
+			return func.apply(this, command.arguments);
+		}
+	}
+}
+
+Pixate.Executor.Queue = function(config) {
+	return {
+		executeMany: function(command) {
+			Pixate.each(commands, function(command) {
+				command.result = this.executeOne(command, api);
+			});
+		},
+
+		executeOne: function(command) {
+			return eval(command.command).apply(this, command.arguments);
+		}
+	}
+}
+
+
+Pixate.Api = {
+	getSelectedLayer: {
+		returns: 'Layer or null',
+		notSupported: true
+	},
+	
+	getSelectedLayers: {
+		returns: 'Layer[]',
+		notSupported: true
+	},
+	
+	getSelectedAnimations: {
+		returns: 'Animation[]',
+		notSupported: true
+	},
+	
+	getLayerByName: {
+		parameterNames: ['name'],
+		returns: 'Layer or null',
+		notSupported: true
+	},
+	
+	getAllLayers: {
+		returns: 'Layer[]',
+		notSupported: true
+	},
+	
+	getAssetByName: {
+		parameterNames: ['name'],
+		returns: 'Asset or null',
+		notSupported: true
+	},
+
+	createLayer: {
+		parameterNames: ['name'],
+		returns: 'Layer'
+	},
+
+	setLayerConfig: {
+		parameterNames: ['layer', 'config'],
+		custom: function(layer, config) {
+			layer = layer.result || layer;
+			Pixate.apply(layer, config);
+		}
+	},
+
+	nestLayer: {
+		parameterNames: ['target', 'source']
+	},
+
+	addAnimationCondition: {
+		parameterNames: ['animation'],
+		returns: 'AnimationCondition'
+	},
+
+	createDragInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createTapInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createDoubleTapInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createLongPressInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createRotateInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createPinchInteraction: {
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	},
+
+	createScrollInteraction{
+		parameterNames: ['layer'],
+		returns: 'Interaction'
+	}
+};
 
 /*
 var createLayer = function(name) {
