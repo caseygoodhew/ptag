@@ -1,46 +1,8 @@
 /***************************************************************************************
  * 
  ***************************************************************************************/
-var pTag = {
-	
-	applyToLayer: function(layer, config) {
-		pTag.apply(layer, config, 'animation', 'children', 'name');
-	},
 
-	applyAnimation: function(layer, config) {
-		
-		var animation;
-
-		switch (config.type) {
-			case 'move':
-				animation = createMoveAnimation(layer);
-				break;
-		}
-
-		var referenceLayer = (config.basedOn.layer === 'screen') ? Screen : getLayerByName(config.basedOn.layer);
-		animation.basedOn = referenceLayer[config.basedOn.interaction];
-		animation.animates = config.animates || AnimationMode.withDuration;
-
-		pTag.apply(animation, config, 'basedOn', 'type');
-	},
-
-	write: function(config) {
-		var layer = createLayer(config.name);
-		pTag.applyToLayer(layer, config);
-
-		pTag.each(config.animation, function(animation) {
-			pTag.applyAnimation(layer, animation);
-		});
-
-		pTag.each(config.children, function(child) {
-			nestLayers(layer, pTag.write(child));
-		});
-
-		return layer;
-	}
-};
-
-pTag.write({
+Pixate.Loader.load({
 	name: 'Flags',
 	x: -400,
 	y: -300,

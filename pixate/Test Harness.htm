@@ -3,18 +3,28 @@
 		<meta charset="UTF-8">
 		<meta name="google" value="notranslate">
 		<title>Pixate Actions Test Harness</title>
-		<style type="text/css">
-		.fail {
-			color: red;
-		}
-		</style>
+		<link href="styles.css" rel="stylesheet">
 	</head>
 
 	<body>
 		<div id="target"></div>
 
+		<script src="Mock.js"></script>
 
 		<script src="./pixate.js"></script>
+		<script src="./Pixate utils.js"></script>
+		<script src="./Pixate.Api.js"></script>
+		<script src="./Pixate.Assert.js"></script>
+		<script src="./Pixate.Assets.js"></script>
+		<script src="./Pixate.Executor.Immediate.js"></script>
+		<script src="./Pixate.Executor.Logger.js"></script>
+		<script src="./Pixate.Loader.js"></script>
+
+		
 		<script src="./Nexus 5.js"></script>
+
+		<script>
+			Pixate.Executor.Logger.output(document.getElementById('target'), true);
+		</script>
 	</body>
 </html>

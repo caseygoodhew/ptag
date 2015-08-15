@@ -1,0 +1,62 @@
+html {
+	font-family: Consolas;
+	color: #555555;
+}
+
+.command {
+	margin-top: 8px;
+}
+
+.command-number {
+	font-size: smaller;
+	color: #aaaaaa;
+	width: 16px;
+	display: inline-block;
+}
+
+.command-name {
+	font-weight: bold;
+}
+
+.command-bracket {
+	font-style: italic;
+	color: #cccccc;
+}
+
+.command-comma {
+	font-style: italic;
+	color: #cccccc;
+}
+
+.command-argument {
+	font-style: italic;
+}
+
+.command-comment {
+	color: #6FC452;
+}
+
+.assertions {
+	margin-left: 16px;
+}
+
+.assertion {
+	color: #aaaaaa;
+}
+
+.assertion.fail {
+	color: #C45252;
+}
+
+.assertion-argument {
+
+}
+
+.assertion-spacing {
+	color: #BF9D9D;
+}
+
+.assertion-message{
+
+}
+
