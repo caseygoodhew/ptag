@@ -1,34 +1,37 @@
-
+'use strict';
 Pixate.Api = {
 	getSelectedLayer: {
-		returns: 'Layer or null'
+		returnType: 'Layer or null'
 	},
 	
 	getSelectedLayers: {
-		returns: 'Layer[]'
+		returnType: 'Layer[]'
 	},
 	
 	getSelectedAnimations: {
-		returns: 'Animation[]'
+		returnType: 'Animation[]'
 	},
 	
 	getLayerByName: {
 		parameterNames: ['name'],
-		returns: 'Layer or null'
+		returnType: 'Layer or null'
 	},
 	
 	getAllLayers: {
-		returns: 'Layer[]'
+		returnType: 'Layer[]',
+		returns: '[]'
 	},
 	
 	getAssetByName: {
 		parameterNames: ['name'],
-		returns: 'Asset or null'
+		returnType: 'Asset or null'
 	},
 
 	createLayer: {
+		debug: false,
 		parameterNames: ['name'],
-		returns: 'Layer'
+		returnType: 'Layer',
+		returns: '{ name: name }'
 	},
 
 	setLayerConfig: {
@@ -40,46 +43,47 @@ Pixate.Api = {
 	},
 
 	nestLayers: {
+		debug: false,
 		parameterNames: ['target', 'source']
 	},
 
 	addAnimationCondition: {
 		parameterNames: ['animation'],
-		returns: 'AnimationCondition'
+		returnType: 'AnimationCondition'
 	},
 
 	createDragInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createTapInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createDoubleTapInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createLongPressInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createRotateInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createPinchInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	},
 
 	createScrollInteraction: {
 		parameterNames: ['layer'],
-		returns: 'Interaction'
+		returnType: 'Interaction'
 	}
 };

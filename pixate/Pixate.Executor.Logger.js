@@ -99,7 +99,7 @@ Pixate.Executor.Logger = function() {
 		executeOne: function(command) {
 			log(command);
 
-			switch (Pixate.Api[command.command].returns) {
+			switch (Pixate.Api[command.command].returnType) {
 				case 'Layer':
 				case 'Layer or null':
 					return layer(command);
