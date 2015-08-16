@@ -9,20 +9,27 @@
 	<body>
 		<div id="target"></div>
 
-		<script src="./pixate.js"></script>
-		<script src="./Pixate utils.js"></script>
-		<script src="./Pixate.Api.js"></script>
-		<script src="./Pixate.Assert.js"></script>
-		<script src="./Pixate.Assets.js"></script>
-		<script src="./Pixate.Executor.Immediate.js"></script>
-		<script src="./Pixate.Executor.Logger.js"></script>
-		<script src="./Pixate.Loader.js"></script>
+		<script src="Pixate.js"></script>
+		<script src="Pixate utils.js"></script>
+		<script src="Pixate.Api.js"></script>
+		<script src="Pixate.Assert.js"></script>
+		<script src="Pixate.Assets.js"></script>
+		<script src="Pixate.Executor.Immediate.js"></script>
+		<script src="Pixate.Executor.Logger.js"></script>
+		<script src="Pixate.Loader.js"></script>
 
 		<script src="Mock.js"></script>
 
-		<script src="./Nexus 5.js"></script>
+		<script>
+			Pixate.log('BEGIN');
+		</script>
+		
+		<script src="api verification.js"></script>
+
+		<script src="Nexus 5.js"></script>
 
 		<script>
+			Pixate.log('END');
 			Pixate.Executor.Logger.output(document.getElementById('target'), true);
 		</script>
 	</body>

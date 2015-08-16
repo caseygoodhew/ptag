@@ -14,7 +14,11 @@ Pixate.Executor.Logger = function() {
 		return argument;
 	}
 
+	var commandCount = 0;
+
 	var log = function(command) {
+
+		commandCount++;
 
 		var commandBlockTarget = document.createElement('div');
 		commandBlockTarget.className = 'command-block';
@@ -22,7 +26,7 @@ Pixate.Executor.Logger = function() {
 		var markup = [];
 		markup.push('<div class="command">');
 			
-			markup.push('<span class="command-number">' + (container.childNodes.length + 1) + '</span>');
+			markup.push('<span class="command-number">' + commandCount + '</span>');
 			markup.push('<span class="command-name">' + command.command + '</span>');
 			markup.push('<span class="command-bracket"> ( </span>');
 			
@@ -80,8 +84,21 @@ Pixate.Executor.Logger = function() {
 
 	return {
 		
+		addMessage: function(message) {
+			var messageEl = document.createElement('div');
+			messageEl.className = "message";
+			messageEl.innerHTML = message;
+			container.appendChild(messageEl);
+		},
+
 		output: function(target, purge) {
-			var rebuild = purge ? '' : container.innerHTML;
+			var rebuild = '';
+
+			if (purge) {
+				commandCount = 0;
+			} else {
+				rebuild = container.innerHTML;
+			}
 
 			while (container.childNodes.length) {
 				target.appendChild(container.firstChild);
@@ -104,7 +121,7 @@ Pixate.Executor.Logger = function() {
 				case 'Layer or null':
 					return layer(command);
 			} 
-		},
+		}
 	};
 }();
 

@@ -73,6 +73,14 @@ Pixate.apply(Pixate, {
 			default:
 				this.executor = null;
 		}
+	},
+
+	log: function(message) {
+		if (Pixate.Executor.Logger) {
+			Pixate.Executor.Logger.addMessage(message);
+		} else {
+			console.log(message);
+		}
 	}
 });
 

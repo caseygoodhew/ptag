@@ -1,6 +1,21 @@
 'use strict';
-if (false) {
+
+/**
+ * Creates a virtual implementation of the Pixate API that can be used for debugging.
+ *
+ * var {ApiMethod} = function({ApiMethod.parameterNames}) {
+ *     // included if definition attribute debug is false, or local forceDebug is true
+ *     debugger; 
+ *     // included if definition returnType has value
+ *     // specific return values are set in the definition's returns attribute
+ *     return {ApiMethod.returns};
+ * }
+ */
+
+if (true) {
 	
+	var forceDebug = false;
+
 	for (var x in Pixate.Api) {
 		var result = [];
 
@@ -17,16 +32,15 @@ if (false) {
 
 		result.push(') { \n');
 		
-		if (Pixate.Api[x].debug !== false) {
+		if (forceDebug || Pixate.Api[x].debug !== false) {
+			result.push('    // included if definition attribute debug is false, or local forceDebug is true\n');
 			result.push('    debugger;\n');
 		}
 
 		if (Pixate.Api[x].returnType) {
-			result.push('    return ');
-			
-			result.push(Pixate.Api[x].returns || '{}');
-
-			result.push(';\n');
+			result.push('    // included if definition returnType has value\n');
+			result.push('    // specific return values are set in the definition\'s returns attribute\n');
+			result.push('    return ' + (Pixate.Api[x].returns || '{}') + ';\n');
 		}
 
 		result.push('}');

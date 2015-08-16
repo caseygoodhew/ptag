@@ -3,6 +3,14 @@ html {
 	color: #555555;
 }
 
+.message {
+	margin-top: 8px;
+	border: 2px dotted #cccccc;
+	padding: 4px;
+	background-color: #E8E5C1;
+	border-radius: 3px;
+}
+
 .command {
 	margin-top: 8px;
 }
