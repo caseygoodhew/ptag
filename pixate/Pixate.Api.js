@@ -286,6 +286,96 @@ catch (ex)
 	};
 }
 
+Pixate.AnchorX = {
+	Left: 0,
+	Center: 0.5,
+	Right: 1,
+	Default: 0.5
+};
+
+Pixate.AnchorY = {
+	Top: 0,
+	Center: 0.5,
+	Bottom: 1,
+	Default: 0.5
+};
+
+Pixate.AnchorZ = {
+	Default: 0
+};
+
+Pixate.Types = {
+	Interaction: {
+		Drag: { 
+			type: 'drag', 
+			handler: 'createDragInteraction', 
+			events: {
+				position: 'dragPosition',
+				start: 'dragStart',
+				release: 'dragRelease'
+			}
+	 	},
+		Tap: { 
+			type: 'tap', 
+			handler: 'createTapInteraction', 
+			events: {
+				tap: 'tap',
+			}
+		},
+		DoubleTap: { 
+			type: 'doubletap', 
+			handler: 'createDoubleTapInteraction', 
+			events: {
+				doubleTap: 'doubletap'
+			}
+		},
+		LongPress: { 
+			type: 'longpress', 
+			handler: 'createLongPressInteraction', 
+			events: {
+				longPress: 'longpress'
+			} 
+		},
+		Rotate: { 
+			type: 'rotate', 
+			handler: 'createRotateInteraction', 
+			events: {
+				rotate: 'rotate',
+				start: 'rotateStart',
+				release: 'rotateRelease'
+			} 
+		},
+		Pinch: { 
+			type: 'pinch', 
+			handler: 'createPinchInteraction', 
+			events: {
+				pinch: 'pinch',
+				start: 'pinchStart',
+				release: 'pinchRelease'
+			} 
+		},
+		Scroll: { 
+			type: 'scroll', 
+			handler: 'createScrollInteraction', 
+			events: {
+				postion: 'scrollPosition',
+				start: 'scrollStart',
+				release: 'scrollRelease',
+				end: 'scrollEnd'
+			} 
+		}
+	},
+
+	Animation: {
+		Move: { type: 'move', handler: 'createMoveAnimation' },
+        Rotate: { type: 'rotate', handler: 'createRotateAnimation' },
+        Scale: { type: 'scale', handler: 'createScaleAnimation' },
+        Fade: { type: 'fade', handler: 'createFadeAnimation' },
+        Color: { type: 'color', handler: 'createColorAnimation' },
+        Image: { type: 'image', handler: 'createImageAnimation' },
+        Reorder: { type: 'reorder', handler: 'createReorderAnimation' },
+	}
+};
 
 Pixate.Properties = {
 	Layer: {
@@ -310,6 +400,19 @@ Pixate.Properties = {
 		animations: { type: 'Animation[]', readOnly: true }
 	},
 
+	Interaction: {
+		id: { type: 'string', readOnly: true },
+		type: { type: 'string', readOnly: true },
+		min: { type: 'number' },
+		minReferenceEdge: { type: 'Edge' },
+		max: { type: 'number' },
+		maxReferenceEdge: { type: 'Edge' },
+		stretchMin : { type: 'number', min: 10, max: 10 },
+		stretchMax : { type: 'number', min: 10, max: 10 },
+		direction: { type: 'DragDirection', forType: ['drag'] },
+		paging: { type: 'PagingMode', forType: ['paging'] }
+	},
+
 	Animation: {
 		conditions: { type: 'AnimationCondition[]', readOnly: true }
 	},
@@ -322,60 +425,51 @@ Pixate.Properties = {
 		collapsed: { type: 'boolean' },
 		animates: { type: 'AnimationMode' },
 		basedOn: { type: 'InteractionEvent' },
-		referenceEdge: { type: 'Edge' },
-		begin: { type: 'number' },
-		end: { type: 'number' },
-		condition: { type: 'string' },
-		to: { },
-		rate: { type: 'number' },
-		duration: { type: 'number' },
-		delay: { type: 'number' },
-		easing: { type: 'EasingCurve' },
-		springTension: { type: 'number' },
-		springFriction: { type: 'number' },
-		toX: { type: 'number' },
-		toY: { type: 'number' },
-		toZ: { type: 'number' },
-		anchorX: { type: 'number' },
-		anchorY: { type: 'number' },
-		anchorZ: { type: 'number' },
-		dimension: { type: 'DimensionType' },
-		target: { type: 'Layer' },
-		scales: { type: 'ScaleType' }
+		referenceEdge: { type: 'Edge', forInteraction: ['drag'] },
+		begin: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },
+		end: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },
+		condition: { type: 'string', forAnimationMode: [Pixate.AnimationMode.withDuration] },
+		to: [{ 
+			type: 'Asset', 
+			forType: ['image'], 
+			forAnimationMode: [Pixate.AnimationMode.withDuration]
+		}, { 
+			type: 'Stacking ', 
+			forType: ['reorder'], 
+			forAnimationMode: [Pixate.AnimationMode.withDuration]
+		}, {
+			type: 'string', 
+			forType: ['color'], 
+			forAnimationMode: [Pixate.AnimationMode.withDuration]
+		}],
+		rate: { type: 'number', forType: ['move', 'scale', 'fade', 'color', 'image', 'reorder'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
+		duration: [
+			{ type: 'number', forType: ['image', 'color'], min: 0, max: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
+			{ type: 'number', forAnimationMode: [Pixate.AnimationMode.withDuration] }
+		],
+		delay: [
+			{ type: 'number', forType: ['image', 'color'], min: 0, max: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
+			{ type: 'number', forAnimationMode: [Pixate.AnimationMode.withDuration] }
+		],
+		easing: { type: 'EasingCurve', forAnimationMode: [Pixate.AnimationMode.withDuration] },
+		springTension: { type: 'number', min: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
+		springFriction: { type: 'number', min: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
+		toX: { type: 'number', forType: ['move', 'rotate', 'scale'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
+		toY: { type: 'number', forType: ['move', 'rotate', 'scale'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
+		toZ: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
+		rateX: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
+		rateY: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
+		rateZ: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
+		anchorX: { type: 'AnchorX', forType: ['rotate', 'scale'] },
+		anchorY: { type: 'AnchorY', forType: ['rotate', 'scale'] },
+		anchorZ: { type: 'AnchorZ', forType: ['rotate', 'scale'] },
+		dimension: { type: 'DimensionType', forType: ['rotate'] },
+		backLayer: { type: 'Layer', forType: ['rotate'] },
+		target: { type: 'Layer', forType: ['reorder'] },
+		scales: { type: 'ScaleType', forType: ['scale'] }
 	}
 };
 
 Pixate.apply(Pixate.Properties.Animation, Pixate.Properties.AnimationCondition);
 
-Pixate.InteractionEvents = {
-	Drag: {
-		position: 'dragPosition',
-		start: 'dragStart',
-		release: 'dragRelease'
-	},
 
-	Rotate: {
-		rotate: 'rotate',
-		start: 'rotateStart',
-		release: 'rotateRelease'
-	},
-
-	Pinch: {
-		pinch: 'pinch',
-		start: 'pinchStart',
-		release: 'pinchRelease'
-	},
-
-	Scroll: {
-		postion: 'scrollPosition',
-		start: 'scrollStart',
-		release: 'scrollRelease',
-		end: 'scrollEnd'
-	},
-
-	Tap: {
-		tap: 'tap',
-		doubleTap: 'doubletap',
-		longPress: 'longpress'
-	}
-};
