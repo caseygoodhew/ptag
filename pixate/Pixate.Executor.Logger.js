@@ -78,7 +78,16 @@ Pixate.Executor.Logger = function() {
 	var layer = function(command) {
 		switch (command.command) {
 			case 'createLayer':
-				return Pixate.Assets.findLayer(command.arguments[0]);
+				return Pixate.eval(Pixate.Api[command.command].returns, Pixate.Api[command.command].parameterNames, command.arguments);
+			case 'getSelectedLayer':
+				var selectedLayer = Pixate.Assets.getSelectedLayer();
+
+				if (selectedLayer) {
+					return selectedLayer;
+				}
+
+				selectedLayer = Pixate.eval(Pixate.Api.getSelectedLayer.returns);
+				return Pixate.Assets.findLayer(selectedLayer.name) || selectedLayer;
 		}
 	}
 

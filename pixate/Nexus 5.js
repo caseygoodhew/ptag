@@ -1,6 +1,17 @@
 /***************************************************************************************
  * 
  ***************************************************************************************/
+(function() {
+
+Mock.enable();
+
+var layer = Pixate.createLayer('casey');
+Pixate.selectLayer(layer);
+var selectedLayer = Pixate.getSelectedLayer();
+
+Pixate.log(layer === selectedLayer ? 'selected layer is ' + selectedLayer.name : 'Unexpected selectedLayer');
+
+return;
 
 Pixate.log('Creating Flags');
 
@@ -27,3 +38,6 @@ Pixate.Loader.load({
 	}]
 });
 
+
+
+})();

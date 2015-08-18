@@ -1,6 +1,7 @@
 Pixate.Assets = function() {
 
 	var layers = [];
+	var selectedLayer;
 
 	return {
 		
@@ -24,11 +25,15 @@ Pixate.Assets = function() {
 			return layer.name;
 		},
 
-		findLayer: function(name) {
+		findLayer: function(nameOrLayer) {
 			
-			for (var i = 0; i < layers.length; i++) {
-				if (layers[i].layer.name === name) {
-					return layers[i];
+			var name = typeof nameOrLayer === 'string' ? nameOrLayer : nameOrLayer.name;
+
+			if (name) {
+				for (var i = 0; i < layers.length; i++) {
+					if (layers[i].layer.name === name) {
+						return layers[i];
+					}
 				}
 			}
 
@@ -41,8 +46,10 @@ Pixate.Assets = function() {
 
 			if (typeof nameOrLayer === 'string'){
 				layer = { name: nameOrLayer };
+			} else if (typeof nameOrLayer === 'object' && nameOrLayer.name) {
+				layer = nameOrLayer;
 			} else {
-				Pixate.Assert.assert(false, 'name', 'Argument is not type string');
+				Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not type string or object');
 			}
 
 			layers.push({
@@ -50,6 +57,14 @@ Pixate.Assets = function() {
 			});
 
 			return layer;
+		},
+
+		getSelectedLayer: function() {
+			return selectedLayer;
+		},
+
+		setSelectedLayer: function(layer) {
+			selectedLayer = layer;
 		}
 	}
 }();

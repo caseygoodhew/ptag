@@ -1,6 +1,8 @@
 Pixate.Api = {
 	getSelectedLayer: {
-		returnType: 'Layer or null'
+		debug: false,
+		returnType: 'Layer or null',
+		returns: '{ name: "__selectedLayer" }'
 	},
 	
 	getSelectedLayers: {
@@ -114,6 +116,7 @@ Pixate.Api = {
 	},
 
 	selectLayer: {
+		debug: true,
 		parameterNames: ['layer']
 	},
 
@@ -404,9 +407,9 @@ Pixate.Properties = {
 		id: { type: 'string', readOnly: true },
 		type: { type: 'string', readOnly: true },
 		min: { type: 'number' },
-		minReferenceEdge: { type: 'Edge' },
+		minReferenceEdge: { type: 'Edge', forType: ['drag'] },
 		max: { type: 'number' },
-		maxReferenceEdge: { type: 'Edge' },
+		maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
 		stretchMin : { type: 'number', min: 10, max: 10 },
 		stretchMax : { type: 'number', min: 10, max: 10 },
 		direction: { type: 'DragDirection', forType: ['drag'] },

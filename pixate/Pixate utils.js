@@ -48,7 +48,7 @@ Pixate.apply(Pixate, {
 			var isPixateStudio = false;
 			try 
 			{
-				isPixateStudio = !!eval('createLayer');
+				isPixateStudio = !!Pixate.eval('createLayer');
 			}
 			catch (exception) {}
 
@@ -75,12 +75,63 @@ Pixate.apply(Pixate, {
 		}
 	},
 
+	fail: function(message) {
+		if (Pixate.Executor.Logger) {
+			Pixate.log('<span class="fail">'+message+'</span>');
+		} else {
+			Pixate.log('FAIL: ' + message);
+		}
+	},
+
 	log: function(message) {
 		if (Pixate.Executor.Logger) {
 			Pixate.Executor.Logger.addMessage(message);
 		} else {
 			console.log(message);
 		}
+	},
+
+	eval: function(expression, parameterNames, parameterValues) {
+		if (typeof expression !== 'string') {
+			Pixate.fail('EVAL EXPRESSION IS NOT A STRING');
+			return;
+		}
+
+		var hasErrors = false;
+		var names = [];
+		var values = [];
+
+		Pixate.each(parameterNames, function(name, index) {
+			if (typeof name !== 'string') {
+				Pixate.fail('EVAL PARAMETER NAME (INDEX '+index+') IS NOT A STRING');
+				hasErrors = true;
+			}
+
+			names.push(name);
+		});
+
+		Pixate.each(parameterValues, function(value, index) {
+			var valueType = typeof value;
+			
+			if (value === null) {
+				values.push('null');
+			} else if (valueType === 'string') {
+				values.push('"'+value+'"');
+			} else if (valueType === 'boolean') {
+				values.push(value);
+			} else if (valueType === 'number') {
+				values.push(value);
+			} else {
+				Pixate.fail('EVAL PARAMETER VALUE (INDEX '+index+') IS UNSUPPORTED TYPE ' + valueType.toUpperCase());
+				hasErrors = true;
+			}
+		});
+
+		if (hasErrors) {
+			return;
+		}
+
+		return eval('(function('+names.join(', ')+') { return '+expression+'; })('+values.join(', ')+')');
 	}
 });
 

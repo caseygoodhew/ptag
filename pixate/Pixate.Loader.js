@@ -17,7 +17,7 @@ Pixate.Loader = function() {
 		return layer;
 	};
 
-	var applyAnimation = function(layer, config) {
+	var applyAnimation = function(layer, animation) {
 		
 		/*
 		var animation;

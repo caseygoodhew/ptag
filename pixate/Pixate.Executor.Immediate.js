@@ -10,7 +10,7 @@ Pixate.Executor.Immediate = function(config) {
 		},
 
 		executeOne: function(command) {
-			var func = Pixate.Api[command.command].custom || eval(command.command);
+			var func = Pixate.Api[command.command].custom || Pixate.eval(command.command);
 			command.result = func.apply(this, command.arguments);
 			return command.result;
 		}
