@@ -7,11 +7,45 @@ Pixate.Executor.Logger = function() {
 	var count = 1;
 
 	var formatArgument = function(argument) {
-		if (Pixate.Assets.isLayer(argument)) {
-			return 'Layer['+Pixate.Assets.getLayerName(argument)+']';
+		var markup = [];
+
+		switch (typeof argument) {
+			case 'object': 
+				if (argument === null) {
+					markup.push('null');
+				} else if (Pixate.isArray(argument)) {
+					markup.push('[');
+					Pixate.each(argument, function(arg) {
+						markup.push(formatArgument(arg));
+					});
+					markup.push(']');
+				} else {
+					markup.push('{');
+					var attributes = [];
+
+					for (var x in argument) {
+						attributes.push(' ' + x + ': ' + formatArgument(argument[x]));
+					}
+					markup.push(attributes.join(','));
+					markup.push(' }');
+				}
+
+				break;
+			case 'string':
+				markup.push("'"+argument+"'");
+				break;
+			case 'number':
+			case 'boolean':
+				markup.push(argument);
+				break;
+			case 'undefined':
+				markup.push('<span class="undefined">undefined</span>');
+				break;
+			default:
+				markup.push(argument);
 		}
 
-		return argument;
+		return markup.join('');
 	}
 
 	var commandCount = 0;
@@ -40,17 +74,37 @@ Pixate.Executor.Logger = function() {
 			
 			markup.push('<span class="command-bracket"> )</span>');
 
-			markup.push('<span class="command-comment"> // ');
+		markup.push('</div>');
 
-				Pixate.each(command.arguments, function(argument, index) {
-					if (index) {
-						markup.push('<span class="command-comma">, </span>');
-					}
+		markup.push('<div class="arguments">');
 
-					markup.push('<span class="command-argument">'+formatArgument(argument)+'</span>');
+			var map = [];
+			var parameterNames = Pixate.Api[command.command].parameterNames;
+			var args = command.arguments;
+
+			for (var i = 0; i < Math.max(parameterNames.length, args.length); i++) {
+				map.push({
+					parameterName: i < parameterNames.length ? parameterNames[i] : '<span class="undefined">undefined</span>',
+					argument: i < args.length ? args[i] : undefined
 				});
-			
-			markup.push('</span>');					
+			}
+
+			Pixate.each(map, function(o) {
+				markup.push('<div class="argument">');
+					markup.push('<span class="argument-name">' + o.parameterName + '</span>');
+					markup.push('<span class="argument-spacing"> - </span>');
+					markup.push('<span class="argument-value">'+formatArgument(o.argument)+'</span>');
+				markup.push('</div>');
+			});
+
+			if (Pixate.Api[command.command].returnType !== undefined) {
+				markup.push('<div class="return">');
+					markup.push('<span class="return-name">return</span>');
+					markup.push('<span class="return-spacing"> </span>');
+					markup.push('<span class="return-value">'+formatArgument(command.result)+'</span>');
+					markup.push('<span class="return-semi-colon">;</span>');
+				markup.push('</div>');
+			}
 
 		markup.push('</div>');
 
@@ -75,10 +129,16 @@ Pixate.Executor.Logger = function() {
 		container.appendChild(commandBlockTarget);
 	}
 
+	var evalCommandReturns = function(command) {
+		var apiCommand = Pixate.Api[command.command];
+		return Pixate.eval(apiCommand.returns, apiCommand.parameterNames, command.arguments);
+	}
+
 	var layer = function(command) {
 		switch (command.command) {
 			case 'createLayer':
-				return Pixate.eval(Pixate.Api[command.command].returns, Pixate.Api[command.command].parameterNames, command.arguments);
+				return evalCommandReturns(command);
+
 			case 'getSelectedLayer':
 				var selectedLayer = Pixate.Assets.getSelectedLayer();
 
@@ -86,8 +146,26 @@ Pixate.Executor.Logger = function() {
 					return selectedLayer;
 				}
 
-				selectedLayer = Pixate.eval(Pixate.Api.getSelectedLayer.returns);
+				selectedLayer = evalCommandReturns(command);
 				return Pixate.Assets.findLayer(selectedLayer.name) || selectedLayer;
+
+			case 'getSelectedLayers':
+				var selectedLayers = Pixate.Assets.getSelectedLayers();
+
+				if (selectedLayers) {
+					return selectedLayers;
+				}
+
+				selectedLayers = []
+				
+				Pixate.each(evalCommandReturns(command), function(selectedLayer) {
+					selectedLayers.push(Pixate.Assets.findLayer(selectedLayer.name) || selectedLayer);
+				});
+
+				return selectedLayers;
+
+			case 'getLayerByName':
+				return Pixate.Assets.findLayer(command.arguments[0]) || evalCommandReturns(command);
 		}
 	}
 
@@ -123,13 +201,16 @@ Pixate.Executor.Logger = function() {
 		},
 
 		executeOne: function(command) {
-			log(command);
-
 			switch (Pixate.Api[command.command].returnType) {
 				case 'Layer':
 				case 'Layer or null':
-					return layer(command);
+				case 'Layer[]':
+					command.result = layer(command);
 			} 
+
+			log(command);
+
+			return command.result;
 		}
 	};
 }();

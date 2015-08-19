@@ -21,7 +21,7 @@ Pixate.Assert = function() {
 		},
 
 		isLayer: function(layer, argument) {
-			this.assert(Pixate.Assets.isLayer(layer), argument, 'Argument is not a layer or layer is not registered.');
+			this.assert(Pixate.Assets.isRegisteredLayer(layer), argument, 'Argument is not a layer or layer is not registered.');
 		},
 
 		isAnimation: function(animation, argument) {

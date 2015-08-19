@@ -1,12 +1,16 @@
 Pixate.Api = {
 	getSelectedLayer: {
+		tested: true,
 		debug: false,
 		returnType: 'Layer or null',
 		returns: '{ name: "__selectedLayer" }'
 	},
 	
 	getSelectedLayers: {
-		returnType: 'Layer[]'
+		tested: true,
+		debug: false,
+		returnType: 'Layer[]',
+		returns: '[{ name: "__selectedLayer" }]'
 	},
 	
 	getSelectedAnimations: {
@@ -15,7 +19,8 @@ Pixate.Api = {
 	
 	getLayerByName: {
 		parameterNames: ['name'],
-		returnType: 'Layer or null'
+		returnType: 'Layer or null',
+		returns: '{ name: name }'
 	},
 	
 	getAllLayers: {
@@ -29,6 +34,7 @@ Pixate.Api = {
 	},
 
 	createLayer: {
+		tested: true,
 		debug: false,
 		parameterNames: ['name'],
 		returnType: 'Layer',
@@ -116,7 +122,8 @@ Pixate.Api = {
 	},
 
 	selectLayer: {
-		debug: true,
+		tested: true,
+		debug: false,
 		parameterNames: ['layer']
 	},
 

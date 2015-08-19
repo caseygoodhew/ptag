@@ -2,17 +2,18 @@
 
 	var result = [];
 
-	var allGood = true;
+	var allGood = false;
 
 	for (var x in Pixate.Api) {
 		
-		if (!Pixate.Api[x].custom) {
-
 			result.push('<div style="margin-left: 16px;">');
 			result.push('<span>' + x + ': </span>');
 			
-			if (Pixate[x]) {
+			if (Pixate[x] && Pixate.Api[x].tested) {
 				result.push('<span style="color:green">OK</span>')
+			} else if (Pixate[x]) {
+				result.push('<span style="color:blue">Not Tested</span>')
+				allGood = false;
 			} else {
 				allGood = false;
 
@@ -53,7 +54,6 @@
 			}
 
 			result.push('</div>');
-		}
 	}
 
 	if (allGood) {

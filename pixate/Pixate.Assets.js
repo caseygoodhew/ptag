@@ -1,11 +1,11 @@
 Pixate.Assets = function() {
 
 	var layers = [];
-	var selectedLayer;
+	var selectedLayers = [];
 
 	return {
 		
-		isLayer: function(layer) {
+		isRegisteredLayer: function(layer) {
 			if (typeof(layer) != 'object') {
 				return false;
 			}
@@ -13,16 +13,6 @@ Pixate.Assets = function() {
 			layer = layer.layer || layer;
 
 			return !!this.findLayer(layer.name);
-		},
-
-		getLayerName: function(layer) {
-			if (typeof(layer) != 'object') {
-				return null;
-			}
-
-			layer = layer.layer || layer;
-
-			return layer.name;
 		},
 
 		findLayer: function(nameOrLayer) {
@@ -40,31 +30,32 @@ Pixate.Assets = function() {
 			return null;
 		},
 
-		registerLayer: function(nameOrLayer) {
+		registerLayer: function(layer) {
 			
-			var layer;
-
-			if (typeof nameOrLayer === 'string'){
-				layer = { name: nameOrLayer };
-			} else if (typeof nameOrLayer === 'object' && nameOrLayer.name) {
-				layer = nameOrLayer;
-			} else {
-				Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not type string or object');
+			if (typeof layer !== 'object' || !layer.name) {
+				Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not an object or does not have a "name" attribute set');
+				return null;
 			}
 
-			layers.push({
-				layer: layer
-			});
+			if (!this.isRegisteredLayer(layer)) {
+				layers.push({
+					layer: layer
+				});
+			}
 
 			return layer;
 		},
 
-		getSelectedLayer: function() {
-			return selectedLayer;
+		setSelectedLayer: function(layer) {
+			selectedLayers = [layer];
 		},
 
-		setSelectedLayer: function(layer) {
-			selectedLayer = layer;
+		getSelectedLayer: function() {
+			return selectedLayers.length ? selectedLayers[0] : null;
+		},
+
+		getSelectedLayers: function() {
+			return selectedLayers;
 		}
 	}
 }();

@@ -3,13 +3,14 @@
  ***************************************************************************************/
 (function() {
 
-Mock.enable();
-
-var layer = Pixate.createLayer('casey');
+    //    Mock.enable();
+var layer = Pixate.getLayerByName('casey');
+layer.testing = true;
 Pixate.selectLayer(layer);
-var selectedLayer = Pixate.getSelectedLayer();
 
-Pixate.log(layer === selectedLayer ? 'selected layer is ' + selectedLayer.name : 'Unexpected selectedLayer');
+var selectedLayer = Pixate.getSelectedLayers();
+
+Pixate.log(layer === selectedLayer[0] ? 'selected layer is ' + selectedLayer[0].name : 'Unexpected selectedLayer');
 
 return;
 

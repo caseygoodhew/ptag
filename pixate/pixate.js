@@ -15,20 +15,24 @@ var Pixate = function() {
 
 	return {
 		
-		// tested
 		getSelectedLayer: function() {
 			var layer = executeCommand('getSelectedLayer', []);
 			
 			if (layer) {
-				Pixate.Assets.registerLayer(layer.name);
+				Pixate.Assets.registerLayer(layer);
 			}
 
 		    return layer;
 		},
 
 		getSelectedLayers: function() {
-		    
-		    return executeCommand('getSelectedLayers', []);
+			var layers = executeCommand('getSelectedLayers', []);
+
+			Pixate.each(layers, function(layer) {
+				Pixate.Assets.registerLayer(layer);
+			});
+
+			return layers;
 		},
 
 		getSelectedAnimations: function() {
@@ -38,9 +42,12 @@ var Pixate = function() {
 		getLayerByName: function(name) {
 		    Pixate.Assert.isText(name, 'name');
 
-		    Pixate.Assets.registerLayer(name);
+		    var layer = executeCommand('getLayerByName', [name]);
+		    if (layer) {
+		    	Pixate.Assets.registerLayer(layer);
+		    }
 
-		    return executeCommand('getLayerByName', [name]);
+		    return layer;
 		},
 
 		getAllLayers: function() {
@@ -53,7 +60,6 @@ var Pixate = function() {
 		    return executeCommand('getAssetByName', [name]);
 		},
 
-		// tested
 		createLayer: function(name, config) {
 			Pixate.Assert.isText(name, 'name');
 
@@ -61,11 +67,18 @@ var Pixate = function() {
 			
 			Pixate.Assets.registerLayer(layer);
 
-			if (typeof(config) === 'object') {
-				executeCommand('setLayerConfig', [layer, config]);
+			if (config) {
+				setLayerConfig(layer, config);
 			}
 
 			return layer;
+		},
+
+		setLayerConfig: function(layer, config) {
+		    Pixate.Assert.isLayer(layer, 'layer');
+		    Pixate.Assert.isConfig(Pixate.Properties.Layer, config, 'config');
+
+		    executeCommand('setLayerConfig', [layer, config]);
 		},
 
 		nestLayers: function(target, source) {

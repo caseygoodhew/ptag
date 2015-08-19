@@ -19,35 +19,37 @@ var Mock = function() {
 			var forceDebug = false;
 
 			for (var x in Pixate.Api) {
-				var result = [];
+				if (!Pixate.Api[x].custom) {
+					var result = [];
 
-				result.push('window.' + x + ' = function(');
+					result.push('window.' + x + ' = function(');
 
-				if (Pixate.Api[x].parameterNames) {
-					for (var i = 0; i < Pixate.Api[x].parameterNames.length; i++) {
-						if (i) {
-							result.push(', ');
+					if (Pixate.Api[x].parameterNames) {
+						for (var i = 0; i < Pixate.Api[x].parameterNames.length; i++) {
+							if (i) {
+								result.push(', ');
+							}
+							result.push(Pixate.Api[x].parameterNames[i])
 						}
-						result.push(Pixate.Api[x].parameterNames[i])
 					}
+
+					result.push(') { \n');
+					
+					if (forceDebug || Pixate.Api[x].debug !== false) {
+						result.push('    // included if definition attribute debug is false, or local forceDebug is true\n');
+						result.push('    debugger;\n');
+					}
+
+					if (Pixate.Api[x].returnType) {
+						result.push('    // included if definition returnType has value\n');
+						result.push('    // specific return values are set in the definition\'s returns attribute\n');
+						result.push('    return ' + (Pixate.Api[x].returns || '{}') + ';\n');
+					}
+
+					result.push('}');
+
+					Pixate.eval(result.join(''));
 				}
-
-				result.push(') { \n');
-				
-				if (forceDebug || Pixate.Api[x].debug !== false) {
-					result.push('    // included if definition attribute debug is false, or local forceDebug is true\n');
-					result.push('    debugger;\n');
-				}
-
-				if (Pixate.Api[x].returnType) {
-					result.push('    // included if definition returnType has value\n');
-					result.push('    // specific return values are set in the definition\'s returns attribute\n');
-					result.push('    return ' + (Pixate.Api[x].returns || '{}') + ';\n');
-				}
-
-				result.push('}');
-
-				Pixate.eval(result.join(''));
 			}
 		}
 	}
