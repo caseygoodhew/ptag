@@ -18,6 +18,8 @@ Pixate.Api = {
 	},
 	
 	getLayerByName: {
+		tested: true,
+		debug: false,
 		parameterNames: ['name'],
 		returnType: 'Layer or null',
 		returns: '{ name: name }'

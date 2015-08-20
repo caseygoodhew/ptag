@@ -92,7 +92,7 @@ Pixate.Executor.Logger = function() {
 			Pixate.each(map, function(o) {
 				markup.push('<div class="argument">');
 					markup.push('<span class="argument-name">' + o.parameterName + '</span>');
-					markup.push('<span class="argument-spacing"> - </span>');
+					markup.push('<span class="argument-spacing">: </span>');
 					markup.push('<span class="argument-value">'+formatArgument(o.argument)+'</span>');
 				markup.push('</div>');
 			});
@@ -166,6 +166,9 @@ Pixate.Executor.Logger = function() {
 
 			case 'getLayerByName':
 				return Pixate.Assets.findLayer(command.arguments[0]) || evalCommandReturns(command);
+
+			case 'getAllLayers':
+				return Pixate.Assets.getAllLayers();
 		}
 	}
 

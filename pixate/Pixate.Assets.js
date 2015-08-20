@@ -55,7 +55,11 @@ Pixate.Assets = function() {
 		},
 
 		getSelectedLayers: function() {
-			return selectedLayers;
+			return [].concat(selectedLayers);
+		},
+
+		getAllLayers: function() {
+			return [].concat(layers);
 		}
 	}
 }();

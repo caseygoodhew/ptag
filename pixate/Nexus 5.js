@@ -3,7 +3,11 @@
  ***************************************************************************************/
 (function() {
 
-    //    Mock.enable();
+       
+       layers.createLayer = Pixate.createLayer
+
+
+
 var layer = Pixate.getLayerByName('casey');
 layer.testing = true;
 Pixate.selectLayer(layer);

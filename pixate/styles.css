@@ -1,4 +1,4 @@
-html {
+html, a {
 	font-family: Consolas;
 	color: #555555;
 }
@@ -9,6 +9,14 @@ html {
 	padding: 4px;
 	background-color: #E8E5C1;
 	border-radius: 3px;
+}
+
+.message a {
+	text-decoration: none;
+}
+
+.message a:hover {
+	text-decoration: underline;
 }
 
 .command {
@@ -44,8 +52,12 @@ html {
 	color: #6FC452;
 }
 
-.assertions {
+.argument, .return, .assertions {
 	margin-left: 16px;
+}
+
+.argument-value {
+	display: inline-block;
 }
 
 .assertion {

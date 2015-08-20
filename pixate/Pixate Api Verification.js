@@ -7,12 +7,12 @@
 	for (var x in Pixate.Api) {
 		
 			result.push('<div style="margin-left: 16px;">');
-			result.push('<span>' + x + ': </span>');
-			
+			result.push('<span><a target="pixate_api" href="http://www.pixate.com/docs/actions/#' + x.toLowerCase() + '">'+x+'</a>: </span>');
+
 			if (Pixate[x] && Pixate.Api[x].tested) {
-				result.push('<span style="color:green">OK</span>')
+				result.push('<span style="color:green">OK</span>');
 			} else if (Pixate[x]) {
-				result.push('<span style="color:blue">Not Tested</span>')
+				result.push('<span style="color:blue">Not Tested</span>');
 				allGood = false;
 			} else {
 				allGood = false;
@@ -56,10 +56,11 @@
 			result.push('</div>');
 	}
 
+	
 	if (allGood) {
-		Pixate.log('<div>Pixate API Verification: <span style="color:green">OK</span></div>')
-	} else {
-		Pixate.log('<div>Pixate API Verification</div>' + result.join(''));
+		result.push('<span style="color:green">OK</span>');
 	}
+	
+	Pixate.log('<div>Pixate API Verification: ' + result.join('') + '</div>');
 
 })();
