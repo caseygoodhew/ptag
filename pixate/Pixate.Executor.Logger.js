@@ -79,8 +79,8 @@ Pixate.Executor.Logger = function() {
 		markup.push('<div class="arguments">');
 
 			var map = [];
-			var parameterNames = Pixate.Api[command.command].parameterNames;
-			var args = command.arguments;
+			var parameterNames = Pixate.Api[command.command].parameterNames || [];
+			var args = command.arguments || [];
 
 			for (var i = 0; i < Math.max(parameterNames.length, args.length); i++) {
 				map.push({

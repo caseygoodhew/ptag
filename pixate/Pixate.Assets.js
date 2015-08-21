@@ -1,10 +1,21 @@
 Pixate.Assets = function() {
 
-	var layers = [];
-	var selectedLayers = [];
+	var layers;
+	var selectedLayers;
+
+	var init = function() {
+		layers = [];
+		selectedLayers = [];
+	};
+
+	init();
 
 	return {
 		
+		reinit: function() {
+			init();
+		},
+
 		isRegisteredLayer: function(layer) {
 			if (typeof(layer) != 'object') {
 				return false;

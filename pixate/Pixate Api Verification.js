@@ -10,7 +10,7 @@
 			result.push('<span><a target="pixate_api" href="http://www.pixate.com/docs/actions/#' + x.toLowerCase() + '">'+x+'</a>: </span>');
 
 			if (Pixate[x] && Pixate.Api[x].tested) {
-				result.push('<span style="color:green">OK</span>');
+				result.push('<span class="success">Has tests</span>');
 			} else if (Pixate[x]) {
 				result.push('<span style="color:blue">Not Tested</span>');
 				allGood = false;
@@ -58,9 +58,9 @@
 
 	
 	if (allGood) {
-		result.push('<span style="color:green">OK</span>');
+		result.push('<span class="success">OK</span>');
 	}
 	
-	Pixate.log('<div>Pixate API Verification: ' + result.join('') + '</div>');
+	Pixate.log('<div>Pixate API Verification: ' + result.join('') + '</div>', true);
 
 })();

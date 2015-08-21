@@ -51,6 +51,12 @@ var Mock = function() {
 					Pixate.eval(result.join(''));
 				}
 			}
+		},
+
+		disable: function() {
+			for (var x in Pixate.Api) {
+				delete window[x];
+			}
 		}
 	}
 }();

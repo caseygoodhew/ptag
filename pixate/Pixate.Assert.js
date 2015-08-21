@@ -17,15 +17,15 @@ Pixate.Assert = function() {
 		},
 
 		isText: function(text, argument) {
-			this.assert(typeof(text) === 'string', argument, 'Argument is not a string.');
+			return this.assert(typeof(text) === 'string', argument, 'Argument is not a string.');
 		},
 
 		isLayer: function(layer, argument) {
-			this.assert(Pixate.Assets.isRegisteredLayer(layer), argument, 'Argument is not a layer or layer is not registered.');
+			return this.assert(Pixate.Assets.isRegisteredLayer(layer), argument, 'Argument is not a layer or layer is not registered.');
 		},
 
 		isAnimation: function(animation, argument) {
-			this.assert(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
+			return this.assert(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
 		},
 
 		assert: function(result, argument, message) {
@@ -34,6 +34,8 @@ Pixate.Assert = function() {
 				argument: argument,
 				message: message
 			});
+
+			return result;
 		}
 	}
 }();

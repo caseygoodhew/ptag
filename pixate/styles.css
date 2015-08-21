@@ -52,7 +52,7 @@ html, a {
 	color: #6FC452;
 }
 
-.argument, .return, .assertions {
+.argument, .return, .assertions, .test {
 	margin-left: 16px;
 }
 
@@ -64,7 +64,7 @@ html, a {
 	color: #aaaaaa;
 }
 
-.fail {
+.fail, .test-fail {
 	color: #C45252;
 }
 
@@ -80,3 +80,14 @@ html, a {
 
 }
 
+.success, .test-success {
+	color: green;
+}
+
+.test-group {
+	margin-left: 16px;
+}
+
+.test-group-title {
+	font-weight: bold;
+}

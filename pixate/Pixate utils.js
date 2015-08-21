@@ -42,17 +42,25 @@ Pixate.apply(Pixate, {
 		}
 	},
 
+	isPixateStudio: function() {
+		var isPixateStudio = false;
+		try 
+		{
+			isPixateStudio = !!Pixate.eval('createLayer');
+		}
+		catch (exception) {}
+
+		return isPixateStudio;
+	},
+
+	isNotPixateStudio: function() {
+		return !Pixate.isPixateStudio();;
+	},
+
 	getExecutor: function() {
 		if (!this.executor) {
 			
-			var isPixateStudio = false;
-			try 
-			{
-				isPixateStudio = !!Pixate.eval('createLayer');
-			}
-			catch (exception) {}
-
-			this.executor = isPixateStudio ? Pixate.Executor.Immediate : Pixate.Executor.Logger;
+			this.executor = this.isPixateStudio() ? Pixate.Executor.Immediate : Pixate.Executor.Logger;
 		}
 
 		return this.executor;
@@ -76,17 +84,17 @@ Pixate.apply(Pixate, {
 	},
 
 	fail: function(message) {
-		if (Pixate.Executor.Logger) {
+		if (!this.isPixateStudio()) {
 			Pixate.log('<span class="fail">'+message+'</span>');
 		} else {
 			Pixate.log('FAIL: ' + message);
 		}
 	},
 
-	log: function(message) {
-		if (Pixate.Executor.Logger) {
+	log: function(message, noConsole) {
+		if (!this.isPixateStudio()) {
 			Pixate.Executor.Logger.addMessage(message);
-		} else {
+		} else if (!noConsole) {
 			console.log(message);
 		}
 	},

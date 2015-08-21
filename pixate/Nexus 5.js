@@ -3,19 +3,8 @@
  ***************************************************************************************/
 (function() {
 
-       
-       layers.createLayer = Pixate.createLayer
-
-
-
-var layer = Pixate.getLayerByName('casey');
-layer.testing = true;
-Pixate.selectLayer(layer);
-
-var selectedLayer = Pixate.getSelectedLayers();
-
-Pixate.log(layer === selectedLayer[0] ? 'selected layer is ' + selectedLayer[0].name : 'Unexpected selectedLayer');
-
+      
+        
 return;
 
 Pixate.log('Creating Flags');

@@ -55,23 +55,25 @@ var Pixate = function() {
 		},
 
 		getAssetByName: function(name) {
-		    Pixate.Assert.isText(name, 'name');
+		    if (Pixate.Assert.isText(name, 'name')) {
 
-		    return executeCommand('getAssetByName', [name]);
+		    	return executeCommand('getAssetByName', [name]);
+		    }
 		},
 
 		createLayer: function(name, config) {
-			Pixate.Assert.isText(name, 'name');
+			if (Pixate.Assert.isText(name, 'name')) {
 
-			var layer = executeCommand('createLayer', [name]);
-			
-			Pixate.Assets.registerLayer(layer);
+				var layer = executeCommand('createLayer', [name]);
+				
+				Pixate.Assets.registerLayer(layer);
 
-			if (config) {
-				setLayerConfig(layer, config);
+				if (config) {
+					setLayerConfig(layer, config);
+				}
+
+				return layer;
 			}
-
-			return layer;
 		},
 
 		setLayerConfig: function(layer, config) {
