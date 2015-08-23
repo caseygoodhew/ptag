@@ -2,13 +2,13 @@ Pixate.Api = {
 	getSelectedLayer: {
 		debug: false,
 		returnType: 'Layer or null',
-		returns: '{ name: "__selectedLayer" }'
+		returns: 'null'
 	},
 	
 	getSelectedLayers: {
 		debug: false,
 		returnType: 'Layer[]',
-		returns: '[{ name: "__selectedLayer" }]'
+		returns: '[]'
 	},
 	
 	getSelectedAnimations: {
@@ -19,7 +19,7 @@ Pixate.Api = {
 		debug: false,
 		parameterNames: ['name'],
 		returnType: 'Layer or null',
-		returns: '{ name: name }'
+		returns: 'null'
 	},
 	
 	getAllLayers: {
@@ -121,10 +121,25 @@ Pixate.Api = {
 
 	selectLayer: {
 		debug: false,
-		parameterNames: ['layer']
+		parameterNames: ['layer'],
+		custom: function(layer) {
+			if (Pixate.isPixateStudio()) {
+				Pixate.Editor.selectLayer();
+			} else {
+				Pixate.Assets.setSelectedLayer(layer);
+			}
+		}
 	},
 
-	clearLayerSelection: { },
+	clearLayerSelection: { 
+		custom: function() {
+			if (Pixate.isPixateStudio()) {
+				Pixate.Editor.clearLayerSelection();
+			} else {
+				Pixate.Assets.setSelectedLayer();
+			}
+		}
+	},
 
 	setLayerConfig: {
 		parameterNames: ['layer', 'config'],
@@ -290,6 +305,38 @@ catch (ex)
 		centerX: 100,
 		centerY: 200,
 		density: 2
+	};
+}
+
+try
+{
+	Pixate.Screen = Screen;
+}
+catch (ex)
+{
+	Pixate.Screen = {
+		width: 200,
+		height: 400,
+		centerX: 100,
+		centerY: 200,
+		density: 2
+	};
+}
+
+try
+{
+	Pixate.Editor = Editor;
+}
+catch (ex)
+{
+	Pixate.Editor = {
+		selectLayer: function(layer) {
+			Pixate.Assets.setSelectedLayer(layer);
+		},
+
+		clearLayerSelection: function() {
+			Pixate.Assets.setSelectedLayer();
+		}
 	};
 }
 

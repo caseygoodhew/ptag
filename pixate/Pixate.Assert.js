@@ -1,16 +1,15 @@
 'use strict';
 Pixate.Assert = function() {
 	
-	var assertions = [];
+	var _assertions = [];
 
 	return {
 
 		getAssertions: function(purge) {
-			var result = [];
-			Pixate.each(assertions, function(o) { result.push(o); });
-
+			var result = [].concat(_assertions);
+			
 			if (purge) {
-				assertions = [];
+				_assertions = [];
 			}
 
 			return result;
@@ -28,11 +27,30 @@ Pixate.Assert = function() {
 			return this.assert(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
 		},
 
+		isConfig: function(propertySet, config, argument) {
+			if (!config || typeof config !== 'object' || Pixate.isArray(config)) {
+				return this.assert(false, argument, 'Argument must be a pure object');
+			}
+
+			return this.assert(false, argument, 'isConfig IS NOT FULLY IMPLEMENTED');
+		},
+
 		assert: function(result, argument, message) {
-			assertions.push({
+			_assertions.push({
 				result: result,
 				argument: argument,
 				message: message
+			});
+
+			return result;
+		},
+
+		aggregateAssertionResult: function(assertions) {
+		
+			var result = true;
+
+			Pixate.each(assertions || _assertions, function(o) {
+				result = result && o.result;
 			});
 
 			return result;

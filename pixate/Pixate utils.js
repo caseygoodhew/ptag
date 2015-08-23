@@ -53,10 +53,6 @@ Pixate.apply(Pixate, {
 		return isPixateStudio;
 	},
 
-	isNotPixateStudio: function() {
-		return !Pixate.isPixateStudio();;
-	},
-
 	getExecutor: function() {
 		if (!this.executor) {
 			
@@ -121,7 +117,9 @@ Pixate.apply(Pixate, {
 		Pixate.each(parameterValues, function(value, index) {
 			var valueType = typeof value;
 			
-			if (value === null) {
+			if (value === undefined) {
+				values.push('undefined');
+			} else if (value === null) {
 				values.push('null');
 			} else if (valueType === 'string') {
 				values.push('"'+value+'"');
@@ -140,6 +138,16 @@ Pixate.apply(Pixate, {
 		}
 
 		return eval('(function('+names.join(', ')+') { return '+expression+'; })('+values.join(', ')+')');
+	},
+
+	delay: function(interval, func, args) {
+		setTimeout(function() { 
+			if (Pixate.isArray(args)) {
+				func.apply(this, args);
+			} else {
+				func.call(this, args);
+			}
+		}, interval);
 	}
 });
 

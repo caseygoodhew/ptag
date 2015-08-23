@@ -142,7 +142,7 @@ Pixate.Executor.Logger = function() {
 			case 'getSelectedLayer':
 				var selectedLayer = Pixate.Assets.getSelectedLayer();
 
-				if (selectedLayer) {
+				if (selectedLayer !== undefined) {
 					return selectedLayer;
 				}
 
@@ -204,16 +204,27 @@ Pixate.Executor.Logger = function() {
 		},
 
 		executeOne: function(command) {
-			switch (Pixate.Api[command.command].returnType) {
-				case 'Layer':
-				case 'Layer or null':
-				case 'Layer[]':
-					command.result = layer(command);
-			} 
+			if (Pixate.Assert.aggregateAssertionResult(command.assertions)) {
+				
+				if (typeof Pixate.Api[command.command].custom === 'function') {
+					command.result = Pixate.Api[command.command].custom.apply(Pixate.Api[command.command], command.arguments||[]);
+				} else {
+					switch (Pixate.Api[command.command].returnType) {
+						case 'Layer':
+						case 'Layer or null':
+						case 'Layer[]':
+							command.result = layer(command);
+					} 
+				}
+			}
 
 			log(command);
 
 			return command.result;
+		},
+
+		log: function(command) {
+			log(command);
 		}
 	};
 }();

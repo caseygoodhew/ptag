@@ -33,7 +33,7 @@ Pixate.Assets = function() {
 			if (name) {
 				for (var i = 0; i < layers.length; i++) {
 					if (layers[i].layer.name === name) {
-						return layers[i];
+						return layers[i].layer;
 					}
 				}
 			}
@@ -41,14 +41,14 @@ Pixate.Assets = function() {
 			return null;
 		},
 
-		registerLayer: function(layer) {
+		registerLayer: function(layer, forceNew) {
 			
 			if (typeof layer !== 'object' || !layer.name) {
 				Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not an object or does not have a "name" attribute set');
 				return null;
 			}
 
-			if (!this.isRegisteredLayer(layer)) {
+			if (forceNew || !this.isRegisteredLayer(layer)) {
 				layers.push({
 					layer: layer
 				});
@@ -58,7 +58,11 @@ Pixate.Assets = function() {
 		},
 
 		setSelectedLayer: function(layer) {
-			selectedLayers = [layer];
+			if (layer) {
+				selectedLayers = [layer];
+			} else {
+				selectedLayers = [];
+			}
 		},
 
 		getSelectedLayer: function() {
@@ -70,7 +74,13 @@ Pixate.Assets = function() {
 		},
 
 		getAllLayers: function() {
-			return [].concat(layers);
+			var result = [];
+
+			Pixate.each(layers, function(layer) {
+				result.push(layer.layer);
+			});
+			
+			return result;
 		}
 	}
 }();

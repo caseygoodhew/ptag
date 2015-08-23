@@ -30,8 +30,12 @@
 		<!--script src="Nexus 5.js"></script-->
 
 		<script>
-			Pixate.log('END');
 			Pixate.Executor.Logger.output(document.getElementById('target'), true);
+			setTimeout(function() { 
+     			Pixate.log('END');
+     			Pixate.Executor.Logger.output(document.getElementById('target'), true);
+   			}, 1);
+   		
 		</script>
 	</body>
 </html>
