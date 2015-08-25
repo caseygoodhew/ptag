@@ -5,12 +5,12 @@ Pixate.ApiTest = function() {
 		return (group + '-' + test.name).replace(/\s/ig, '');
 	}
 	
-	var testRunner = function(group, test, testId) {
+	var testRunner = function(group, test, testId, context) {
 		
 		Pixate.Assets.reinit();
 		Pixate.log('<span id="'+generateId(group, test)+'">' + group + ': ' + test.name + '</span>', true);
 
-		test.test(Pixate.ApiTest.Assert);
+		test.test(Pixate.ApiTest.Assert, context);
 		var assertions = Pixate.ApiTest.Assert.getAssertions();
 
 		var el = document.getElementById(testId);
@@ -48,29 +48,39 @@ Pixate.ApiTest = function() {
 
 			for (var x in tests) {
 
+				var context;
+				Pixate.each(tests[x], function(test) {
+					if (test.context) {
+						context = test.context;
+					}
+				});
+
 				fullResult.push('<div class="test-group"><span class="test-group-title">'+x+'</span>')
 
 				Pixate.each(tests[x], function(test) {
 					
-					var runTest = true;
-					if (typeof test.when === 'function') {
-						runTest = test.when();
-					}
+					if (!test.context) {
 
-					if (runTest) {
-						testCounter++;
-						var testId = 'test-' + testCounter;
+						var runTest = true;
+						if (typeof test.when === 'function') {
+							runTest = test.when();
+						}
 
-						var testResult = [];
-						testResult.push('<div class="test">');
-						testResult.push('<span class="test-name"><a href="#'+generateId(x, test)+'">'+test.name+'</a></span>');
-						testResult.push('<span class="test-spacing">: </span>');
-						testResult.push('<span id="'+testId+'" class="test-pending"></span>');
-						testResult.push('</div>');
-						
-						fullResult.push(testResult.join(''));
+						if (runTest) {
+							testCounter++;
+							var testId = 'test-' + testCounter;
 
-						Pixate.delay(1, testRunner, [x, test, testId]);
+							var testResult = [];
+							testResult.push('<div class="test">');
+							testResult.push('<span class="test-name"><a href="#'+generateId(x, test)+'">'+test.name+'</a></span>');
+							testResult.push('<span class="test-spacing">: </span>');
+							testResult.push('<span id="'+testId+'" class="test-pending"></span>');
+							testResult.push('</div>');
+							
+							fullResult.push(testResult.join(''));
+
+							Pixate.delay(1, testRunner, [x, test, testId, context]);
+						}
 					}
 				});
 
@@ -441,28 +451,37 @@ var tests = {
 	}],
 	/******************** GETLAYERBYNAME ********************/
 	setLayerConfig: [{
-		name: 'only sets pixate properties',
-		test: function(Assert) {
-			
-			var rand = function() { return Math.floor((Math.random() * 1000) + 1); }
+		context: {
+			rand: function() { 
+				return Math.floor((Math.random() * 1000) + 1); 
+			},
 
+			generateRand: function(type) {
+				switch (type) {
+					case 'string':
+						return this.rand()+'-'+this.rand()+'-'+this.rand();
+					case 'number':
+						return this.rand();
+					case 'boolean':
+						return this.rand()%2 === 0;
+					case 'Asset':
+						return {};
+					case 'ClippingType':
+						return this.rand()%2 ? Pixate.ClippingType.none : Pixate.ClippingType.bounds;
+				}
+
+				return null;
+			}
+		}
+	}, {
+		name: 'only sets pixate properties',
+		test: function(Assert, context) {
+			
 			var config = {};
 
 			for (var x in Pixate.Properties.Layer) {
 				if (!Pixate.Properties.Layer[x].readOnly) {
-					switch (Pixate.Properties.Layer[x].type) {
-						case 'string':
-							config[x] = rand()+'-'+rand()+'-'+rand();
-							break;
-						case 'number':
-							config[x] = rand();
-							break;
-						case 'Asset':
-							config[x] = {};
-							break;
-						case 'ClippingType':
-							config[x] = rand()%2 ? Pixate.ClippingType.none : Pixate.ClippingType.bounds;
-					}
+					config[x] = context.generateRand(Pixate.Properties.Layer[x].type);
 				}
 			}
 
@@ -483,6 +502,58 @@ var tests = {
 			}
 
 			Assert.isUndefined(result.anyOther, 'Expected "anyOther" to be undefined');
+		}
+	}, {
+		name: 'cannot modify readOnly properties',
+		test: function(Assert, context) {
+			
+			var config = { id: 44 };
+
+			var layer = Pixate.createLayer('test');
+
+			Assert.isNotNullOrUndefined(layer, 'Expected layer');
+			
+			Pixate.setLayerConfig(layer, config);
+
+			var result = Pixate.getLayerByName(config.name);
+
+			Assert.isTrue(Pixate.Properties.Layer.id.readOnly, 'Expected that id attribute is readOnly');
+			Assert.areNotEqual(config.id, layer.id, 'Expected that id would not equal config.id');
+		}
+	}, {
+		name: 'name accepts expected values',
+		test: function(Assert, context) {
+			
+			var layer = Pixate.createLayer('test');
+			Assert.isNotNullOrUndefined(layer, 'Expected layer');
+			
+			Pixate.setLayerConfig(layer, { name: undefined });
+			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (undefined)');
+
+			Pixate.setLayerConfig(layer, { name: null });
+			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (null)');
+
+			Pixate.setLayerConfig(layer, { name: '' });
+			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (empty string)');
+
+			Pixate.setLayerConfig(layer, { name: true });
+			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (true)');
+
+			Pixate.setLayerConfig(layer, { name: false });
+			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (false)');
+
+			Pixate.setLayerConfig(layer, { name: ' ' });
+			Assert.areEqual(' ', layer.name, 'Expected name to be set (one space)');
+
+			var config = {};
+			
+			config.name = context.generateRand('number');
+			Pixate.setLayerConfig(layer, config);
+			Assert.areEqual(''+config.name, layer.name, 'Expected name to be set (number)');
+
+			config.name = context.generateRand('string');
+			Pixate.setLayerConfig(layer, config);
+			Assert.areEqual(''+config.name, layer.name, 'Expected name to be set (string)');	
 		}
 	}]
 };

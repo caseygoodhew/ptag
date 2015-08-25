@@ -65,7 +65,7 @@ Pixate.Assert = function() {
 
 				} else if (_primitiveBaseTypes[propertySet[x].type]) {
 				
-					aggregateResult = this.fail(propertySet[x].type === typeof config[x], subargument, 'Attribute "'+x+'" is "'+typeof(x)+'" - property set "'+propertySetName+'" expected "'+propertySet[x].type+'"') && aggregateResult;
+					aggregateResult = this.fail(this.canTransform(config[x], propertySet[x].type), subargument, 'Attribute "'+x+'" is "'+(config[x] === null ? 'null' : typeof(config[x]))+'" - property set "'+propertySetName+'" expected "'+propertySet[x].type+'"') && aggregateResult;
 				
 				} else {
 					
@@ -74,6 +74,40 @@ Pixate.Assert = function() {
 			}
 
 			return aggregateResult;
+		},
+
+		canTransform: function(from, toType) {
+			
+			var fromType = typeof from;
+
+			var map = Pixate.apply({}, _primitiveBaseTypes);
+			for (var x in map) { 
+				map[x] = {}; 
+				map[x][x] = true;
+			}
+			
+			map.string.number = true;
+			map.string[undefined] = false;
+			map.string[null] = false;
+			map.string[''] = false;
+			
+			if (!map[toType]) {
+				return false;
+			}
+
+			if (map[toType][from] === false) {
+				return false;
+			}
+
+			if (map[toType][fromType]) {
+				return true;
+			}
+
+			if (map[toType][from] === true) {
+				return true;
+			}
+
+			return false;
 		},
 
 		isEnumValue: function(enumType, value, argument, message) {

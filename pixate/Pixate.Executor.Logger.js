@@ -97,14 +97,14 @@ Pixate.Executor.Logger = function() {
 				markup.push('</div>');
 			});
 
-			if (Pixate.Api[command.command].returnType !== undefined) {
+			/*if (Pixate.Api[command.command].returnType !== undefined) {
 				markup.push('<div class="return">');
 					markup.push('<span class="return-name">return</span>');
 					markup.push('<span class="return-spacing"> </span>');
 					markup.push('<span class="return-value">'+formatArgument(command.result)+'</span>');
 					markup.push('<span class="return-semi-colon">;</span>');
 				markup.push('</div>');
-			}
+			}*/
 
 		markup.push('</div>');
 
@@ -127,6 +127,29 @@ Pixate.Executor.Logger = function() {
 		commandBlockTarget.innerHTML = markup.join('');
 
 		container.appendChild(commandBlockTarget);
+
+		return commandBlockTarget;
+	}
+
+	var logResult = function(container, command) {
+		
+		if (Pixate.Api[command.command].returnType === undefined) { return; }
+
+		var markup = [];
+		
+		markup.push('<div class="return">');
+			markup.push('<span class="return-name">return</span>');
+			markup.push('<span class="return-spacing"> </span>');
+			markup.push('<span class="return-value">'+formatArgument(command.result)+'</span>');
+			markup.push('<span class="return-semi-colon">;</span>');
+		markup.push('</div>');
+
+		var returnBlockTarget = document.createElement('div');
+		returnBlockTarget.innerHTML = markup.join('');
+
+		while (returnBlockTarget.firstChild) {
+			container.appendChild(returnBlockTarget.firstChild);
+		}
 	}
 
 	var evalCommandReturns = function(command) {
@@ -204,6 +227,9 @@ Pixate.Executor.Logger = function() {
 		},
 
 		executeOne: function(command) {
+			
+			var container = log(command);
+
 			if (Pixate.Assert.aggregateAssertionResult(command.assertions)) {
 				
 				if (typeof Pixate.Api[command.command].custom === 'function') {
@@ -218,7 +244,7 @@ Pixate.Executor.Logger = function() {
 				}
 			}
 
-			log(command);
+			logResult(container, command);
 
 			return command.result;
 		},

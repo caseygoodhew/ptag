@@ -153,7 +153,15 @@ Pixate.Api = {
 				}
 			}
 
-			Pixate.apply(layer, Pixate.include(config, validAttributes));
+			config = Pixate.include(config, validAttributes);
+
+			for (var x in config) {
+				if (Pixate.Properties.Layer[x].type === 'string') {
+					config[x] = ''+config[x];
+				}
+			}
+
+			Pixate.apply(layer, config);
 		}
 	}
 };
