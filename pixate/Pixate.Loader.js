@@ -4,7 +4,7 @@ Pixate.Loader = function() {
 	var Screen = {};
 
 	var loadLayer = function(config) {
-		var layer = Pixate.createLayer(config.name, Pixate.exclude(config, 'animation', 'children', 'name'));
+		var layer = Pixate.createLayer(config.name, Pixate.exclude(config, ['animation', 'children', 'name']));
 
 		Pixate.each(config.children, function(child) {
 			Pixate.nestLayers(layer, loadLayer(child));

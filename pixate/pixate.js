@@ -84,7 +84,7 @@ var Pixate = function() {
 		setLayerConfig: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.isConfig(Pixate.Properties.Layer, config, 'config');
+			Pixate.Assert.isConfig('Layer', config, 'config');
 
 		    return executeCommand('setLayerConfig', [layer, config]);
 		},

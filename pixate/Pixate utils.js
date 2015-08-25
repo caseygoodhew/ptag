@@ -14,12 +14,31 @@ Pixate.apply(Pixate, {
 		return Object.prototype.toString.call(object) === '[object Array]';
 	},
 
+	include: function(source, paramInclude) {
+
+		var include = {};
+
+		for (var i = 1; i < paramInclude.length; i++) {
+			include[paramInclude[i]] = true;
+		}
+
+		var result = {};
+
+		for (var x in source) {
+			if (include[x]) {
+				result[x] = source[x];
+			}
+		}
+
+		return result;
+	},
+
 	exclude: function(source, paramExclude) {
 
 		var exclude = {};
 
-		for (var i = 1; i < arguments.length; i++) {
-			exclude[arguments[i]] = true;
+		for (var i = 1; i < paramExclude.length; i++) {
+			exclude[paramExclude[i]] = true;
 		}
 
 		var result = {};

@@ -145,7 +145,15 @@ Pixate.Api = {
 		parameterNames: ['layer', 'config'],
 		custom: function(layer, config) {
 			layer = layer.result || layer;
-			Pixate.apply(layer, config);
+			
+			var validAttributes = [];
+			for (var x in Pixate.Properties.Layer) {
+				if (!Pixate.Properties.Layer.readOnly) {
+					validAttributes.push(x);
+				}
+			}
+
+			Pixate.apply(layer, Pixate.include(config, validAttributes));
 		}
 	}
 };

@@ -115,10 +115,10 @@ Pixate.Executor.Logger = function() {
 			Pixate.each(command.assertions, function(assertion) {
 				hasFailure = hasFailure || !assertion.result;
 				
-				markup.push('<div class="assertion' + (assertion.result ? '' : ' fail') + '">');
+				markup.push('<div class="assertion' + (assertion.result ? '' : (' ' + assertion.failLevel)) + '">');
 					markup.push('<span class="assertion-argument">' + assertion.argument + '</span>');
 					markup.push('<span class="assertion-spacing"> - </span>');
-					markup.push('<span class="assertion-message">' + (assertion.result ? 'OK' : assertion.message) + '</span>');
+					markup.push('<span class="assertion-message">' + (assertion.result ? (assertion.successMessage || 'OK') : (assertion.failMessage || 'FAILED')) + '</span>');
 				markup.push('</div>')
 			});
 

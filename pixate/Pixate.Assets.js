@@ -44,7 +44,7 @@ Pixate.Assets = function() {
 		registerLayer: function(layer, forceNew) {
 			
 			if (typeof layer !== 'object' || !layer.name) {
-				Pixate.Assert.assert(false, 'nameOrLayer', 'Argument is not an object or does not have a "name" attribute set');
+				Pixate.Assert.fail(false, 'nameOrLayer', 'Argument is not an object or does not have a "name" attribute set');
 				return null;
 			}
 
