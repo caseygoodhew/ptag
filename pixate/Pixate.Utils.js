@@ -1,15 +1,15 @@
 'use strict';
-Pixate.apply = function(target, source) {
-	
-	for (var x in source) {
-		target[x] = source[x];
-	}
 
-	return target;
-};
+Pixate.Utils = {
+	apply: function(target, source) {
+		
+		for (var x in source) {
+			target[x] = source[x];
+		}
 
-Pixate.apply(Pixate, {
-	
+		return target;
+	},
+
 	isArray: function(object) {
 		return Object.prototype.toString.call(object) === '[object Array]';
 	},
@@ -57,7 +57,9 @@ Pixate.apply(Pixate, {
 		array = array == null ? [] : Pixate.isArray(array) ? array : [array];
 
 		for (var i = 0; i < array.length; i++) {
-			fn.call(scope||array, array[i], i);
+			if (fn.call(scope||array, array[i], i) === false) {
+				return;
+			}
 		}
 	},
 
@@ -114,6 +116,14 @@ Pixate.apply(Pixate, {
 		}
 	},
 
+	important: function(message) {
+		if (this.isPixateStudio()) {
+			Pixate.log('*** ' + message + ' ***');
+		} else {
+			Pixate.log('<span class="important">'+message+'</span>');
+		}	
+	},
+
 	eval: function(expression, parameterNames, parameterValues) {
 		if (typeof expression !== 'string') {
 			Pixate.fail('EVAL EXPRESSION IS NOT A STRING');
@@ -168,5 +178,6 @@ Pixate.apply(Pixate, {
 			}
 		}, interval);
 	}
-});
+};
 
+Pixate.Utils.apply(Pixate, Pixate.Utils);

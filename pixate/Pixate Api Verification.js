@@ -4,8 +4,12 @@
 
 	var allGood = false;
 
+	var exclude = { 'Enums': true, 'Properties': true, 'Types': true };
+
 	for (var x in Pixate.Api) {
 		
+		if (!exclude[x]) {
+
 			result.push('<div style="margin-left: 16px;">');
 			result.push('<span><a target="pixate_api" href="http://www.pixate.com/docs/actions/#' + x.toLowerCase() + '">'+x+'</a>: </span>');
 
@@ -54,6 +58,7 @@
 			}
 
 			result.push('</div>');
+		}		
 	}
 
 	

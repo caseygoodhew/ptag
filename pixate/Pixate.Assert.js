@@ -44,11 +44,12 @@ Pixate.Assert = function() {
 				return this.fail(false, argument, 'Argument must be a pure object');
 			}
 
-			var propertySet = Pixate.Properties[propertySetName];
+			var propertySet = Pixate.Api.Properties[propertySetName];
 			var aggregateResult = true;
 
 			for (var x in config) {
 				var subargument = argument + '["'+x+'"]';
+				var attributeType = typeof config[x];
 
 				if (!propertySet[x]) {
 				
@@ -59,55 +60,40 @@ Pixate.Assert = function() {
 				
 					aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" is read only') && aggregateResult;
 				
-				} else if (propertySet[x].type === 'Asset') {
-
-					aggregateResult = this.isAsset(config[x], subargument) && aggregateResult;	
-
-				} else if (_primitiveBaseTypes[propertySet[x].type]) {
-				
-					aggregateResult = this.fail(this.canTransform(config[x], propertySet[x].type), subargument, 'Attribute "'+x+'" is "'+(config[x] === null ? 'null' : typeof(config[x]))+'" - property set "'+propertySetName+'" expected "'+propertySet[x].type+'"') && aggregateResult;
-				
 				} else {
+
+					if (propertySet[x].validator) {
+						var result = propertySet[x].validator(config[x]);
+
+						if (result === true) {
+							// do nothing
+						} else if (result === false) {
+							aggregateResult = this.fail(false, subargument, 'Invalid value') && aggregateResult;
+						} else if (typeof result === 'string') {
+							aggregateResult = this.fail(false, subargument, result) && aggregateResult;
+						} else if (typeof result === 'object' && result.fail) {
+							aggregateResult = this.fail(false, subargument, result.fail) && aggregateResult;
+						} else if (typeof result === 'object' && result.warn) {
+							this.warn(false, subargument, result.warn);
+						} else {
+							this.warn(false, subargument, 'Validitor was indeterminate');
+						} 
+					} else if (_primitiveBaseTypes[propertySet[x].type]) {
 					
-					aggregateResult = this.isEnumValue(propertySet[x].type, config[x], subargument, 'Attribute "'+x+'" ('+config[x]+') does not map to valid Pixate.'+propertySet[x].type+' value') && aggregateResult;
+						aggregateResult = this.fail(typeof config[x] === propertySet[x].type, subargument, 'Unexpected value type') && aggregateResult;
+					
+					} else if (propertySet[x].type === 'Asset') {
+
+						aggregateResult = this.isAsset(config[x], subargument) && aggregateResult;	
+
+					} else if (!_primitiveBaseTypes[propertySet[x].type]) {
+									
+						aggregateResult = this.isEnumValue(propertySet[x].type, config[x], subargument, 'Attribute "'+x+'" ('+config[x]+') does not map to valid Pixate.'+propertySet[x].type+' value') && aggregateResult;
+					}
 				}
 			}
 
 			return aggregateResult;
-		},
-
-		canTransform: function(from, toType) {
-			
-			var fromType = typeof from;
-
-			var map = Pixate.apply({}, _primitiveBaseTypes);
-			for (var x in map) { 
-				map[x] = {}; 
-				map[x][x] = true;
-			}
-			
-			map.string.number = true;
-			map.string[undefined] = false;
-			map.string[null] = false;
-			map.string[''] = false;
-			
-			if (!map[toType]) {
-				return false;
-			}
-
-			if (map[toType][from] === false) {
-				return false;
-			}
-
-			if (map[toType][fromType]) {
-				return true;
-			}
-
-			if (map[toType][from] === true) {
-				return true;
-			}
-
-			return false;
 		},
 
 		isEnumValue: function(enumType, value, argument, message) {

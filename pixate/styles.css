@@ -19,6 +19,10 @@ html, a {
 	text-decoration: underline;
 }
 
+.important {
+	font-weight: bold;
+}
+
 .command {
 	margin-top: 8px;
 }

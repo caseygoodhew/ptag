@@ -10,8 +10,12 @@
 		<div id="target"></div>
 
 		<script src="Pixate.js"></script>
-		<script src="Pixate utils.js"></script>
+		<script src="Pixate.Utils.js"></script>
 		<script src="Pixate.Api.js"></script>
+		<script src="Pixate.Api.Colors.js"></script>
+		<script src="Pixate.Api.Enums.js"></script>
+		<script src="Pixate.Api.Properties.js"></script>
+		<script src="Pixate.Api.Types.js"></script>
 		<script src="Pixate.Assert.js"></script>
 		<script src="Pixate.Assets.js"></script>
 		<script src="Pixate.Executor.Immediate.js"></script>
@@ -21,7 +25,7 @@
 		<script src="Mock.js"></script>
 
 		<script>
-			Pixate.log('BEGIN');
+			Pixate.important('BEGIN');
 		</script>
 		
 		<script src="Pixate Api Test.js"></script>
@@ -32,7 +36,7 @@
 		<script>
 			Pixate.Executor.Logger.output(document.getElementById('target'), true);
 			setTimeout(function() { 
-     			Pixate.log('END');
+     			Pixate.important('END');
      			Pixate.Executor.Logger.output(document.getElementById('target'), true);
    			}, 1);
    		
