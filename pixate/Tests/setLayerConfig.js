@@ -33,6 +33,7 @@ Pixate.ApiTest.bundle({
 					config[x] = context.generateRand(Pixate.Api.Properties.Layer[x].type);
 				}
 			}
+
 			config.backgroundColor = Pixate.Api.Colors.Named.Black;
 			config.anyOther = 'value';
 
@@ -163,6 +164,57 @@ Pixate.ApiTest.bundle({
 				Pixate.setLayerConfig(layer, config);
 				Assert.areNotEqual(config.backgroundColor, layer.backgroundColor, 'Expected backgroundColor to remain unchanged ('+config.backgroundColor+')');
 			});
+		}
+	}, {
+		name: 'number attributes only accept numbers',
+		test: function(Assert, context) {
+			var layer = Pixate.createLayer('test');
+			Assert.isNotNullOrUndefined(layer, 'Expected layer');
+
+			var testAttribute = function(attribute) {
+				var config = {};
+				config[attribute] = context.generateRand('boolean');
+				Pixate.setLayerConfig(layer, config);
+				Assert.areNotEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to remain unchanged (boolean)');
+
+				config[attribute] = context.generateRand('string');
+				Pixate.setLayerConfig(layer, config);
+				Assert.areNotEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to remain unchanged (string)');
+
+				config[attribute] = context.generateRand('number');
+				Pixate.setLayerConfig(layer, config);
+				Assert.areEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to be set (number)');
+			}
+
+			for (var x in Pixate.Api.Properties.Layer) {
+				if (!Pixate.Api.Properties.Layer[x].readOnly && Pixate.Api.Properties.Layer[x].type === 'number') {
+					testAttribute(x);
+				}
+			}
+		}
+	}, {
+		name: 'clipping only accepts valid ClippingType',
+		test: function(Assert, context) {
+			var layer = Pixate.createLayer('test');
+			Assert.isNotNullOrUndefined(layer, 'Expected layer');
+
+			var config = {};
+
+			config.clipping = Pixate.Api.Enums.ClippingType.none;
+			Pixate.setLayerConfig(layer, config);
+			Assert.areEqual(config.clipping, layer.clipping, 'Expected clipping to be set (ClippingType.none)');
+
+			config.clipping = Pixate.Api.Enums.ClippingType.bounds;
+			Pixate.setLayerConfig(layer, config);
+			Assert.areEqual(config.clipping, layer.clipping, 'Expected clipping to be set (ClippingType.bounds)');
+
+			config.clipping = context.generateRand('string');
+			Pixate.setLayerConfig(layer, config);
+			Assert.areNotEqual(config.clipping, layer.clipping, 'Expected clipping to remain unchanged (random string)');
+
+			config.clipping = null;
+			Pixate.setLayerConfig(layer, config);
+			Assert.areNotEqual(config.clipping, layer.clipping, 'Expected clipping to remain unchanged (null)');
 		}
 	}]
 });
