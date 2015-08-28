@@ -4,7 +4,7 @@
 
 	var allGood = false;
 
-	var exclude = { 'Enums': true, 'Properties': true, 'Types': true };
+	var exclude = { 'Colors': true, 'Enums': true, 'Properties': true, 'Types': true };
 
 	for (var x in Pixate.Api) {
 		
