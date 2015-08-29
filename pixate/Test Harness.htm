@@ -19,7 +19,8 @@
 		<script src="Pixate.Assert.js"></script>
 		<script src="Pixate.Assets.js"></script>
 		<script src="Pixate.Executor.Immediate.js"></script>
-		<script src="Pixate.Executor.Logger.js"></script>
+		<script src="Pixate.Executor.Inspector.js"></script>
+		<script src="Pixate.CommandLogger.js"></script>
 		<script src="Pixate.Loader.js"></script>
 
 		<script src="Mock.js"></script>
@@ -49,10 +50,10 @@
 		<!--script src="Nexus 5.js"></script-->
 
 		<script>
-			Pixate.Executor.Logger.output(document.getElementById('target'), true);
+			Pixate.CommandLogger.output(document.getElementById('target'), true);
 			setTimeout(function() { 
      			Pixate.important('END');
-     			Pixate.Executor.Logger.output(document.getElementById('target'), true);
+     			Pixate.CommandLogger.output(document.getElementById('target'), true);
    			}, 1);
    		
 		</script>

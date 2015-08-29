@@ -1,7 +1,6 @@
 'use strict';
-Pixate.Executor = Pixate.Executor || {};
 
-Pixate.Executor.Logger = function() {
+Pixate.CommandLogger = function() {
 
 	var container = document.createElement('div');
 	var count = 1;
@@ -96,15 +95,6 @@ Pixate.Executor.Logger = function() {
 					markup.push('<span class="argument-value">'+formatArgument(o.argument)+'</span>');
 				markup.push('</div>');
 			});
-
-			/*if (Pixate.Api[command.command].returnType !== undefined) {
-				markup.push('<div class="return">');
-					markup.push('<span class="return-name">return</span>');
-					markup.push('<span class="return-spacing"> </span>');
-					markup.push('<span class="return-value">'+formatArgument(command.result)+'</span>');
-					markup.push('<span class="return-semi-colon">;</span>');
-				markup.push('</div>');
-			}*/
 
 		markup.push('</div>');
 
@@ -220,15 +210,9 @@ Pixate.Executor.Logger = function() {
 			container.innerHTML = rebuild;
 		},
 
-		executeMany: function(commands) {
-			Pixate.each(commands, function(command) {
-				command.result = this.executeOne(command);
-			}, this);
-		},
-
-		executeOne: function(command) {
+		logCommand: function(command) {
 			
-			var container = log(command);
+			return log(command);
 
 			if (Pixate.Assert.aggregateAssertionResult(command.assertions)) {
 				
@@ -249,8 +233,8 @@ Pixate.Executor.Logger = function() {
 			return command.result;
 		},
 
-		log: function(command) {
-			log(command);
+		logResult: function(container, command) {
+			return logResult(container, command);
 		}
 	};
 }();

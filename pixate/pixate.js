@@ -205,6 +205,12 @@ var Pixate = function() {
 
 		clearLayerSelection: function() {
 		    return executeCommand('clearLayerSelection', []);
+		},
+
+		getParentLayer: function(layer) {
+		    Pixate.Assert.isLayer(layer, 'layer');
+
+		    return executeCommand('getParentLayer', [layer]);
 		}
 	}
 }();

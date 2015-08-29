@@ -117,12 +117,13 @@ Pixate.ApiTest.bundle({
 			
 			var namedColors = []
 			for (var x in Pixate.Api.Colors.Named) {
-				var rand = Math.floor((Math.random() * 10) + 1);
-				if (rand === 1) {
-					rand = Math.floor((Math.random() * 3) + 1);
+				if (typeof Pixate.Api.Colors.Named[x] === 'string') {
+					var rand = Math.floor((Math.random() * 3) + 1);
 					namedColors.push(rand === 1 ? x : rand === 2 ? x.toLowerCase() : x.toUpperCase());
 				}
 			}
+
+			Assert.areNotEqual(0, namedColors.length, 'Expected namedColors to contain values');
 
 			var config = {};
 

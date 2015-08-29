@@ -57,8 +57,10 @@ Pixate.Utils = {
 		array = array == null ? [] : Pixate.isArray(array) ? array : [array];
 
 		for (var i = 0; i < array.length; i++) {
-			if (fn.call(scope||array, array[i], i) === false) {
-				return;
+			var result = fn.call(scope||array, array[i], i);
+
+			if (result !== undefined) {
+				return result;
 			}
 		}
 	},
@@ -77,7 +79,7 @@ Pixate.Utils = {
 	getExecutor: function() {
 		if (!this.executor) {
 			
-			this.executor = this.isPixateStudio() ? Pixate.Executor.Immediate : Pixate.Executor.Logger;
+			this.executor = this.isPixateStudio() ? Pixate.Executor.Immediate : Pixate.Executor.Inspector;
 		}
 
 		return this.executor;
@@ -85,9 +87,9 @@ Pixate.Utils = {
 
 	setExecutor: function(executor) {
 		switch (executor) {
-			case Pixate.Executor.Logger:
-			case 'logger':
-				this.executor = Pixate.Executor.Logger;
+			case Pixate.Executor.Inspector:
+			case 'inspector':
+				this.executor = Pixate.Executor.Inspector;
 				break;
 			
 			case Pixate.Executor.Immediate:
@@ -110,7 +112,7 @@ Pixate.Utils = {
 
 	log: function(message, noConsole) {
 		if (!this.isPixateStudio()) {
-			Pixate.Executor.Logger.addMessage(message);
+			Pixate.CommandLogger.addMessage(message);
 		} else if (!noConsole) {
 			console.log(message);
 		}

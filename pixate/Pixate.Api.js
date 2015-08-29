@@ -146,7 +146,7 @@ Pixate.Api = {
 	setLayerConfig: {
 		parameterNames: ['layer', 'config'],
 		custom: function(layer, config) {
-			layer = layer.result || layer;
+			//layer = layer.result || layer;
 			
 			var validAttributes = [];
 			for (var x in Pixate.Api.Properties.Layer) {
@@ -164,6 +164,23 @@ Pixate.Api = {
 			}
 
 			Pixate.apply(layer, config);
+		}
+	},
+
+	getParentLayer: {
+		parameterNames: ['layer'],
+		returnType: 'Layer or null',
+		custom: function(layer) {
+			
+			if (!layer || !layer.parentId) {
+				return null;
+			}
+
+			return Pixate.each(Pixate.getAllLayers(), function(o) {
+				if (o._id === layer.parentId) {
+					return o;
+				}
+			}) || null;
 		}
 	}
 };
