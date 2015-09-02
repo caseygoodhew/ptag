@@ -38,12 +38,17 @@ Pixate.ApiTest.bundle({
 	}, {
 		name: 'returns first layer of name',
 		test: function(Assert) {
+			var removeIds = function(layer) {
+				return Pixate.exclude(layer, ['_id', 'parentId']);
+			}
+
 			var layerOne = Pixate.createLayer('test');
 			var layerTwo = Pixate.createLayer('test');
 
 			Assert.isNotNullOrUndefined(layerOne, 'Expected layer (layerOne)');
 			Assert.isNotNullOrUndefined(layerTwo, 'Expected layer (layerTwo)');
-			Assert.areEqual(layerOne, layerTwo, 'Expected layers to be equal');
+			Assert.areEqual(removeIds(layerOne), removeIds(layerTwo), 'Expected layers to be equal');
+			Assert.areNotEqual(layerOne._id, layerTwo._id, 'Expected different layer ids');
 			Assert.areNotSame(layerOne, layerTwo, 'Expected layers not to be the same');
 
 			var layer = Pixate.getLayerByName(layerOne.name);

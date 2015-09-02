@@ -8,7 +8,7 @@ Pixate.Executor.Inspector = function() {
 		return Pixate.eval(apiCommand.returns, apiCommand.parameterNames, command.arguments);
 	}
 
-	var layer = function(command) {
+	var execute = function(command) {
 		switch (command.command) {
 			case 'createLayer':
 				return evalCommandReturns(command);
@@ -43,6 +43,10 @@ Pixate.Executor.Inspector = function() {
 
 			case 'getAllLayers':
 				return Pixate.Assets.getAllLayers();
+
+			case 'nestLayers':
+				return Pixate.Assets.nestLayers.apply(Pixate.Assets.nestLayers, command.arguments);
+
 		}
 	}
 
@@ -63,12 +67,7 @@ Pixate.Executor.Inspector = function() {
 				if (typeof Pixate.Api[command.command].custom === 'function') {
 					command.result = Pixate.Api[command.command].custom.apply(Pixate.Api[command.command], command.arguments||[]);
 				} else {
-					switch (Pixate.Api[command.command].returnType) {
-						case 'Layer':
-						case 'Layer or null':
-						case 'Layer[]':
-							command.result = layer(command);
-					} 
+					command.result = execute(command);
 				}
 			}
 

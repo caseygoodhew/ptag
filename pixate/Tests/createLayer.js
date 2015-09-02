@@ -10,8 +10,7 @@ Pixate.ApiTest.bundle({
 		test: function(Assert) {
 			
 			var expected = { name: 'create layer testX' };
-			var layer = Pixate.createLayer(expected.name);
-			
+			var layer = Pixate.exclude(Pixate.createLayer(expected.name), ['_id', 'parentId']);
 			Assert.areEqual(expected, layer, 'Expected layer object with name set');
 		}
 	}, {

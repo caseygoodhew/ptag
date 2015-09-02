@@ -37,7 +37,7 @@ Pixate.Utils = {
 
 		var exclude = {};
 
-		for (var i = 1; i < paramExclude.length; i++) {
+		for (var i = 0; i < paramExclude.length; i++) {
 			exclude[paramExclude[i]] = true;
 		}
 

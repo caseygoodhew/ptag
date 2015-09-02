@@ -10,6 +10,18 @@ Pixate.Assets = function() {
 
 	init();
 
+	
+	var randMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'a', 'b', 'c', 'd', 'e', 'f']
+	var randId = function() {
+		var result = [];
+
+		for (var i = 0; i < 20; i++) {
+			result.push(randMap[Math.floor(Math.random() * randMap.length)]);
+		}
+
+		return result.join('');
+	}
+
 	return {
 		
 		reinit: function() {
@@ -17,23 +29,25 @@ Pixate.Assets = function() {
 		},
 
 		isRegisteredLayer: function(layer) {
-			if (typeof(layer) != 'object') {
+			if (!layer || typeof(layer) != 'object') {
 				return false;
 			}
-
-			layer = layer.layer || layer;
 
 			return !!this.findLayer(layer.name);
 		},
 
 		findLayer: function(nameOrLayer) {
 			
+			if (!nameOrLayer) {
+				return null;
+			}
+
 			var name = typeof nameOrLayer === 'string' ? nameOrLayer : nameOrLayer.name;
 
 			if (name) {
 				for (var i = 0; i < layers.length; i++) {
-					if (layers[i].layer.name === name) {
-						return layers[i].layer;
+					if (layers[i].name === name) {
+						return layers[i];
 					}
 				}
 			}
@@ -43,15 +57,17 @@ Pixate.Assets = function() {
 
 		registerLayer: function(layer, forceNew) {
 			
-			if (typeof layer !== 'object' || !layer.name) {
+			if (!layer || typeof layer !== 'object' || !layer.name) {
 				Pixate.Assert.fail(false, 'nameOrLayer', 'Argument is not an object or does not have a "name" attribute set');
 				return null;
 			}
 
 			if (forceNew || !this.isRegisteredLayer(layer)) {
-				layers.push({
-					layer: layer
-				});
+				if (!layer._id) {
+					layer._id = randId();
+				}
+
+				layers.push(layer);
 			}
 
 			return layer;
@@ -74,13 +90,17 @@ Pixate.Assets = function() {
 		},
 
 		getAllLayers: function() {
-			var result = [];
+			return [].concat(layers);
+		},
 
-			Pixate.each(layers, function(layer) {
-				result.push(layer.layer);
+		// parent, params children[]
+		nestLayers: function() {
+			
+			var parent = arguments[0];
+			Pixate.each(Array.prototype.splice.call(arguments, 1), function(child) {
+				child.parentId = parent._id;
 			});
 			
-			return result;
 		}
 	}
 }();
