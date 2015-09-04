@@ -182,6 +182,17 @@ Pixate.Api = {
 				}
 			}) || null;
 		}
+	},
+
+	createInteraction: {
+		parameterNames: ['layer', 'type'],
+		custom: function(layer, type) {
+			if (!type || !Pixate[type.handler]) {
+				return;
+			}
+
+			return Pixate[type.handler].call(Pixate, layer);
+		}
 	}
 };
 

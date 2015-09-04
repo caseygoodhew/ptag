@@ -35,6 +35,17 @@ Pixate.Assert = function() {
 			return this.fail(Pixate.Assets.isRegisteredLayer(layer), argument, 'Argument is not a layer or layer is not registered.');
 		},
 
+		isInteraction: function(interaction, argument) {
+			
+			var found = false;
+
+			for (var x in Pixate.Api.Types.Interaction) {
+				found = found || interaction === Pixate.Api.Types.Interaction[x];
+			}
+
+			return this.fail(found, argument, 'Argument is not an interaction.')
+		},
+
 		isAnimation: function(animation, argument) {
 			return this.fail(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
 		},

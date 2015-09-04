@@ -111,6 +111,29 @@ var Pixate = function() {
 		    return executeCommand('addAnimationCondition', [animation]);
 		},
 
+		createInteraction: function(layer, type) {
+			Pixate.Assert.isLayer(layer, 'layer');
+
+			if (typeof type === 'string') {
+				if (Pixate.Api.Types.Interaction[type]) {
+					type = Pixate.Api.Types.Interaction[type];
+				} else {
+					for (var x in Pixate.Api.Types.Interaction) {
+						if (type === Pixate.Api.Types.Interaction[x].type) {
+							type = Pixate.Api.Types.Interaction[x];
+							break;
+						}
+					}
+				}
+			}
+
+			Pixate.Assert.fail(false, 'PROBLEM', 'This style mutates the users input before it is written out to the console (bad form!)')
+
+			Pixate.Assert.isInteraction(type, 'type');
+
+			return executeCommand('createInteraction', [layer, type]);
+		},
+
 		createDragInteraction: function(layer) {
 		    Pixate.Assert.isLayer(layer, 'layer');
 
