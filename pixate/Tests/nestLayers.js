@@ -1,27 +1,86 @@
 Pixate.ApiTest.bundle({
-	createLayer: [{
-		name: 'with no parameters fails',
+	nestLayers: [{
+		name: 'with one child layer succeeds',
 		test: function(Assert) {
-			var layer = Pixate.createLayer();
-			Assert.isUndefined(layer, 'Expected undefined');
+			var parent = Pixate.createLayer('parent');
+			var child = Pixate.createLayer('child');
+			
+			Pixate.nestLayers(parent, child);
+
+			Assert.areSame(parent, Pixate.getParentLayer(child), 'Expected parent layer');
 		}
 	}, {
-		name: 'with string succeeds',
+		name: 'with two child layers succeeds',
 		test: function(Assert) {
+			var parent = Pixate.createLayer('parent');
+			var childOne = Pixate.createLayer('child-one');
+			var childTwo = Pixate.createLayer('child-two');
 			
-			var expected = { name: 'create layer testX' };
-			var layer = Pixate.createLayer(expected.name);
-			
-			Assert.areEqual(expected, layer, 'Expected layer object with name set');
+			Pixate.nestLayers(parent, childOne, childTwo);
+
+			Assert.areSame(parent, Pixate.getParentLayer(childOne), 'Expected parent layer (one)');
+			Assert.areSame(parent, Pixate.getParentLayer(childTwo), 'Expected parent layer (two)');
 		}
 	}, {
-		name: 'with Layer fails',
+		name: 'with many child layers succeeds',
+		test: function(Assert) {
+			var parent = Pixate.createLayer('parent');
+			var children = [
+				Pixate.createLayer('child-one'), 
+				Pixate.createLayer('child-two'),
+				Pixate.createLayer('child-three'),
+				Pixate.createLayer('child-four'),
+				Pixate.createLayer('child-five'),
+				Pixate.createLayer('child-six'),
+				Pixate.createLayer('child-seven'),
+				Pixate.createLayer('child-eight')
+			];
+
+			Pixate.nestLayers.apply(Pixate, [parent].concat(children));
+
+			Pixate.each(children, function(child) {
+				Assert.areSame(parent, Pixate.getParentLayer(child), 'Expected parent layer');
+			});
+		}
+	}, {
+		name: 'with no arguments doesn\'t fall over',
+		test: function(Assert) {			
+			Pixate.nestLayers();
+		}
+	}, {
+		name: 'with only one layer doesn\'t fall over',
 		test: function(Assert) {
 			
-			var firstLayer = Pixate.createLayer('create layer test');
-			var result = Pixate.createLayer(firstLayer);
+			var layer = Pixate.createLayer('layer');
 			
-			Assert.isUndefined(result, 'Expected createLayer to fail');
-		},
+			Pixate.nestLayers(layer);
+		}
+	}, {
+		name: 'with one invalid source does not nest any',
+		test: function(Assert) {
+			
+			var parent = Pixate.createLayer('parent');
+			var children = [
+				Pixate.createLayer('child-one'), 
+				Pixate.createLayer('child-two'),
+				'invalid',
+				Pixate.createLayer('child-three'),
+				Pixate.createLayer('child-four'),
+				Pixate.createLayer('child-five'),
+				Pixate.createLayer('child-six'),
+				Pixate.createLayer('child-seven'),
+				Pixate.createLayer('child-eight')
+			];
+
+			Pixate.nestLayers.apply(Pixate, [parent].concat(children));
+
+			Pixate.each(children, function(child) {
+				if (typeof child === 'object') {
+					Assert.isNull(Pixate.getParentLayer(child), 'Expected null');
+				} else {
+					Assert.isUndefined(Pixate.getParentLayer(child), 'Expected undefined');
+				}
+			});
+		}
 	}]
 });

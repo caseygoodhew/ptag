@@ -89,12 +89,20 @@ var Pixate = function() {
 		    return executeCommand('setLayerConfig', [layer, config]);
 		},
 
-		nestLayers: function(target, source) {
+		nestLayers: function(/*target, source, source, source*/) {
 			
-			Pixate.Assert.isLayer(target, 'target');
-			Pixate.Assert.isLayer(source, 'source');
+			var target = arguments[0];
+			var sources = Array.prototype.splice.call(arguments, 1);
 
-			return executeCommand('nestLayers', [target, source]);
+			Pixate.Assert.isLayer(target, 'target');
+			
+			Pixate.each(sources, function(source, index) {
+				Pixate.Assert.isLayer(source, 'source['+index+']');
+			});
+
+			Pixate.Assert.fail(!!sources.length, 'sources', 'Sources not provided');
+
+			return executeCommand('nestLayers', [target].concat(sources));
 		},
 
 		addAnimationCondition: function(animation) {
