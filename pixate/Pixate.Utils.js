@@ -145,7 +145,7 @@ Pixate.Utils = {
 			names.push(name);
 		});
 
-		Pixate.each(parameterValues, function(value, index) {
+		/*Pixate.each(parameterValues, function(value, index) {
 			var valueType = typeof value;
 			
 			if (value === undefined) {
@@ -163,12 +163,14 @@ Pixate.Utils = {
 				hasErrors = true;
 			}
 		});
-
+		*/
 		if (hasErrors) {
 			return;
 		}
 
-		return eval('(function('+names.join(', ')+') { return '+expression+'; })('+values.join(', ')+')');
+		//return eval('(function('+names.join(', ')+') { return '+expression+'; })('+values.join(', ')+')');
+		
+		return function() { return eval('(function('+names.join(', ')+') { return '+expression+'; }).apply(this, this)'); }.call(parameterValues);
 	},
 
 	delay: function(interval, func, args) {
@@ -179,6 +181,17 @@ Pixate.Utils = {
 				func.call(this, args);
 			}
 		}, interval);
+	},
+
+	id: function() {
+		var hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'a', 'b', 'c', 'd', 'e', 'f']; 
+		
+		var result = [];  
+		for (var i = 0; i < 20; i++) {  
+			result.push(hexMap[Math.floor(Math.random() * hexMap.length)]); 
+		}  
+	
+		return result.join('');  
 	}
 };
 

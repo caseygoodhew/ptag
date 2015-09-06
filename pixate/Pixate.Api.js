@@ -38,7 +38,7 @@ Pixate.Api = {
 		debug: false,
 		parameterNames: ['name'],
 		returnType: 'Layer',
-		returns: '{ name: name }'
+		returns: '{ _id: Pixate.id(), name: name, interactions: {} }',
 	},
 
 	nestLayers: {
@@ -53,7 +53,8 @@ Pixate.Api = {
 
 	createDragInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: 'layer.interactions.drag = layer.interactions.drag || { type: Pixate.Api.Types.Interaction.Drag.type }'
 	},
 
 	createTapInteraction: {
@@ -228,3 +229,5 @@ catch (ex)
 		}
 	};
 }
+
+

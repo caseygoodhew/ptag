@@ -35,7 +35,7 @@ try
 catch (ex)
 {
 	Pixate.Api.Enums.DragDirection = {
-		free: 'DragDirection.freee',
+		free: 'DragDirection.free',
 		horizontal: 'DragDirection.horizontal',
 		vertical: 'DragDirection.vertical'
 	};

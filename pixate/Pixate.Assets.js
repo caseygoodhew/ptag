@@ -10,18 +10,6 @@ Pixate.Assets = function() {
 
 	init();
 
-	
-	var randMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', 'a', 'b', 'c', 'd', 'e', 'f']
-	var randId = function() {
-		var result = [];
-
-		for (var i = 0; i < 20; i++) {
-			result.push(randMap[Math.floor(Math.random() * randMap.length)]);
-		}
-
-		return result.join('');
-	}
-
 	return {
 		
 		reinit: function() {
@@ -63,10 +51,6 @@ Pixate.Assets = function() {
 			}
 
 			if (forceNew || !this.isRegisteredLayer(layer)) {
-				if (!layer._id) {
-					layer._id = randId();
-				}
-
 				layers.push(layer);
 			}
 

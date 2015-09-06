@@ -9,9 +9,9 @@ Pixate.ApiTest.bundle({
 		name: 'with string succeeds',
 		test: function(Assert) {
 			
-			var expected = { name: 'create layer testX' };
-			var layer = Pixate.exclude(Pixate.createLayer(expected.name), ['_id', 'parentId']);
-			Assert.areEqual(expected, layer, 'Expected layer object with name set');
+			var name = 'create layer test';
+			var layer = Pixate.createLayer(name);
+			Assert.areEqual(name, layer.name, 'Expected object with name attribute');
 		}
 	}, {
 		name: 'with Layer fails',

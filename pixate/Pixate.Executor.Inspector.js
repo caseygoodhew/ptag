@@ -10,9 +10,6 @@ Pixate.Executor.Inspector = function() {
 
 	var execute = function(command) {
 		switch (command.command) {
-			case 'createLayer':
-				return evalCommandReturns(command);
-
 			case 'getSelectedLayer':
 				var selectedLayer = Pixate.Assets.getSelectedLayer();
 
@@ -47,6 +44,8 @@ Pixate.Executor.Inspector = function() {
 			case 'nestLayers':
 				return Pixate.Assets.nestLayers.apply(Pixate.Assets.nestLayers, command.arguments);
 
+			default:
+				return evalCommandReturns(command);
 		}
 	}
 
