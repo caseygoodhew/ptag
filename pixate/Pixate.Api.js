@@ -218,11 +218,13 @@ Pixate.Api = {
 	createInteraction: {
 		parameterNames: ['layer', 'type'],
 		custom: function(layer, type) {
-			if (!type || !Pixate[type.handler]) {
+			var interaction = Pixate.resolveInteraction(type);
+
+			if (!interaction || !Pixate[interaction.handler]) {
 				return;
 			}
 
-			return Pixate[type.handler].call(Pixate, layer);
+			return Pixate[interaction.handler].call(Pixate, layer);
 		}
 	}
 };

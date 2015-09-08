@@ -37,13 +37,7 @@ Pixate.Assert = function() {
 
 		isInteraction: function(interaction, argument) {
 			
-			var found = false;
-
-			for (var x in Pixate.Api.Types.Interaction) {
-				found = found || interaction === Pixate.Api.Types.Interaction[x];
-			}
-
-			return this.fail(found, argument, 'Argument is not an interaction.')
+			return this.fail(!!Pixate.resolveInteraction(interaction), argument, 'Argument is not an interaction.')
 		},
 
 		isAnimation: function(animation, argument) {

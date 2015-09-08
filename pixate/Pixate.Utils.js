@@ -192,6 +192,28 @@ Pixate.Utils = {
 		}  
 	
 		return result.join('');  
+	}, 
+
+	resolveInteraction: function(type) {
+
+
+		if (typeof type === 'string') {
+			if (Pixate.Api.Types.Interaction[type]) {
+				return Pixate.Api.Types.Interaction[type];
+			} else {
+				for (var x in Pixate.Api.Types.Interaction) {
+					if (type === Pixate.Api.Types.Interaction[x].type) {
+						return Pixate.Api.Types.Interaction[x];
+					}
+				}
+			}
+		} else if (typeof type === 'object') {
+			for (var x in Pixate.Api.Types.Interaction) {
+				if (type === Pixate.Api.Types.Interaction[x]) {
+					return type;
+				}
+			}
+		}
 	}
 };
 
