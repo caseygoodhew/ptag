@@ -57,7 +57,7 @@ Pixate.Api = {
 		returns: ['(function() { ',
 		'	if (!layer.interactions.drag) { ',
 		'		layer.interactions.drag = { type: Pixate.Api.Types.Interaction.Drag.type }; ',
-		'		layer.animations.push({ basedOn: "drag", animates: Pixate.AnimationMode.continuousWithRate, type: Pixate.Types.Animation.Move.type, name: "Move w/ Drag" }); ',
+		'		layer.animations.push(Pixate.apply({ basedOn: "drag" }, Pixate.Api.Types.Interaction.Drag.events.position.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.drag; ',
 		'})()'].join('')
@@ -65,32 +65,56 @@ Pixate.Api = {
 
 	createTapInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: 'layer.interactions.tap = layer.interactions.tap || { type: Pixate.Api.Types.Interaction.Tap.type }'
 	},
 
 	createDoubleTapInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: 'layer.interactions.doubletap = layer.interactions.doubletap || { type: Pixate.Api.Types.Interaction.DoubleTap.type }'
 	},
 
 	createLongPressInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: 'layer.interactions.longpress = layer.interactions.longpress || { type: Pixate.Api.Types.Interaction.LongPress.type }'
 	},
 
 	createRotateInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: ['(function() { ',
+		'	if (!layer.interactions.rotate) { ',
+		'		layer.interactions.rotate = { type: Pixate.Api.Types.Interaction.Rotate.type }; ',
+		'		layer.animations.push(Pixate.apply({ basedOn: "rotate" }, Pixate.Api.Types.Interaction.Rotate.events.rotate.defaultAnimation)); ',
+		'	} ',
+		'	return layer.interactions.rotate; ',
+		'})()'].join('')
 	},
 
 	createPinchInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: ['(function() { ',
+		'	if (!layer.interactions.pinch) { ',
+		'		layer.interactions.pinch = { type: Pixate.Api.Types.Interaction.Pinch.type }; ',
+		'		layer.animations.push(Pixate.apply({ basedOn: "pinch" }, Pixate.Api.Types.Interaction.Pinch.events.pinch.defaultAnimation)); ',
+		'	} ',
+		'	return layer.interactions.pinch; ',
+		'})()'].join('')
 	},
 
 	createScrollInteraction: {
 		parameterNames: ['layer'],
-		returnType: 'Interaction'
+		returnType: 'Interaction',
+		returns: ['(function() { ',
+		'	if (!layer.interactions.scroll) { ',
+		'		layer.interactions.scroll = { type: Pixate.Api.Types.Interaction.Scroll.type }; ',
+		'		layer.animations.push(Pixate.apply({ basedOn: "scroll" }, Pixate.Api.Types.Interaction.Scroll.events.postion.defaultAnimation)); ',
+		'	} ',
+		'	return layer.interactions.scroll; ',
+		'})()'].join('')
 	},
 
 	createMoveAnimation: {

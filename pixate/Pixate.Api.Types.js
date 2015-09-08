@@ -19,7 +19,11 @@ Pixate.Api.Types.Interaction = {
 		type: 'drag', 
 		handler: 'createDragInteraction', 
 		events: {
-			position: { name: 'dragPosition', defaultAnimation: { type: Pixate.Api.Types.Animation.Move, name: 'Move w/ Drag', animates: Pixate.AnimationMode.continuousWithRate }, canAnimate: false },
+			position: { 
+				name: 'dragPosition', 
+				defaultAnimation: { type: Pixate.Api.Types.Animation.Move.type, name: 'Move w/ Drag', animates: Pixate.AnimationMode.continuousWithRate }, 
+				canAnimate: false 
+			},
 			start: 'dragStart',
 			release: 'dragRelease'
 		}
@@ -49,7 +53,10 @@ Pixate.Api.Types.Interaction = {
 		type: 'rotate', 
 		handler: 'createRotateInteraction', 
 		events: {
-			rotate: { name: 'rotate', defaultAnimation: { type: Pixate.Api.Types.Animation.Rotate, name: 'Turn w/ Rotate' } },
+			rotate: { 
+				name: 'rotate', 
+				defaultAnimation: { type: Pixate.Api.Types.Animation.Rotate.type, name: 'Turn w/ Rotate', animates: Pixate.AnimationMode.continuousWithRate } 
+			},
 			start: 'rotateStart',
 			release: 'rotateRelease'
 		} 
@@ -58,7 +65,10 @@ Pixate.Api.Types.Interaction = {
 		type: 'pinch', 
 		handler: 'createPinchInteraction', 
 		events: {
-			pinch: { name: 'pinch', defaultAnimation: { type: Pixate.Api.Types.Animation.Resize, name: 'Resize w/ Pinch' } },
+			pinch: { 
+				name: 'pinch', 
+				defaultAnimation: { type: Pixate.Api.Types.Animation.Scale.type, name: 'Resize w/ Pinch', animates: Pixate.AnimationMode.continuousWithRate } 
+			},
 			start: 'pinchStart',
 			release: 'pinchRelease'
 		} 
@@ -67,7 +77,10 @@ Pixate.Api.Types.Interaction = {
 		type: 'scroll', 
 		handler: 'createScrollInteraction', 
 		events: {
-			postion: { name: 'scrollPosition', defaultAnimation: { type: Pixate.Api.Types.Animation.Scroll, name: 'Scroll w/ Drag' } },
+			postion: { 
+				name: 'scrollPosition', 
+				defaultAnimation: { type: Pixate.Api.Types.Animation.Move.type, name: 'Scroll w/ Drag', animates: Pixate.AnimationMode.continuousWithRate } 
+			},
 			start: 'scrollStart',
 			release: 'scrollRelease',
 			end: 'scrollEnd'
