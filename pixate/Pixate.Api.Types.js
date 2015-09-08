@@ -19,7 +19,7 @@ Pixate.Api.Types.Interaction = {
 		type: 'drag', 
 		handler: 'createDragInteraction', 
 		events: {
-			position: { name: 'dragPosition', defaultAnimation: { type: Pixate.Api.Types.Animation.Move, name: 'Move w/ Drag' }, canAnimate: false },
+			position: { name: 'dragPosition', defaultAnimation: { type: Pixate.Api.Types.Animation.Move, name: 'Move w/ Drag', animates: Pixate.AnimationMode.continuousWithRate }, canAnimate: false },
 			start: 'dragStart',
 			release: 'dragRelease'
 		}

@@ -38,7 +38,7 @@ Pixate.Api = {
 		debug: false,
 		parameterNames: ['name'],
 		returnType: 'Layer',
-		returns: '{ _id: Pixate.id(), name: name, interactions: {} }',
+		returns: '{ _id: Pixate.id(), name: name, interactions: {}, animations: [] }',
 	},
 
 	nestLayers: {
@@ -54,7 +54,13 @@ Pixate.Api = {
 	createDragInteraction: {
 		parameterNames: ['layer'],
 		returnType: 'Interaction',
-		returns: 'layer.interactions.drag = layer.interactions.drag || { type: Pixate.Api.Types.Interaction.Drag.type }'
+		returns: ['(function() { ',
+		'	if (!layer.interactions.drag) { ',
+		'		layer.interactions.drag = { type: Pixate.Api.Types.Interaction.Drag.type }; ',
+		'		layer.animations.push({ basedOn: "drag", animates: Pixate.AnimationMode.continuousWithRate, type: Pixate.Types.Animation.Move.type, name: "Move w/ Drag" }); ',
+		'	} ',
+		'	return layer.interactions.drag; ',
+		'})()'].join('')
 	},
 
 	createTapInteraction: {
