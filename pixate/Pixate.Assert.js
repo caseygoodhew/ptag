@@ -44,7 +44,7 @@ Pixate.Assert = function() {
 			return this.fail(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
 		},
 
-		isConfig: function(propertySetName, config, argument) {
+		isConfig: function(propertySetName, context, config, argument) {
 			if (!config || typeof config !== 'object' || Pixate.isArray(config)) {
 				return this.fail(false, argument, 'Argument must be a pure object');
 			}
@@ -65,6 +65,10 @@ Pixate.Assert = function() {
 				
 					aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" is read only') && aggregateResult;
 				
+				} else if (propertySet[x].forType && !Pixate.contains(propertySet[x].forType, (context||{}).type)) {
+
+					aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" of type "'+(context||{}).type+'" is not in forType ('+propertySet[x].forType.join()+')') && aggregateResult;
+
 				} else {
 
 					if (propertySet[x].validator) {
@@ -85,7 +89,16 @@ Pixate.Assert = function() {
 						} 
 					} else if (_primitiveBaseTypes[propertySet[x].type]) {
 					
-						aggregateResult = this.fail(typeof config[x] === propertySet[x].type, subargument, 'Unexpected value type') && aggregateResult;
+						var result = this.fail(typeof config[x] === propertySet[x].type, subargument, 'Unexpected value type');
+						aggregateResult = result && aggregateResult;
+
+						if (result && propertySet[x].min !== undefined) {
+							this.warn(config[x] < propertySet[x].min, subargument, 'Value ' + config[x] + ' is less than min value of ' + propertySet[x].min);
+						} 
+
+						if (result && propertySet[x].max !== undefined) {
+							this.warn(config[x] > propertySet[x].max, subargument, 'Value ' + config[x] + ' is greater than max value of ' + propertySet[x].max);
+						}
 					
 					} else if (propertySet[x].type === 'Asset') {
 

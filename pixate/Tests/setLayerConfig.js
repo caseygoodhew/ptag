@@ -174,6 +174,7 @@ Pixate.ApiTest.bundle({
 
 			var testAttribute = function(attribute) {
 				var config = {};
+				
 				config[attribute] = context.generateRand('boolean');
 				Pixate.setLayerConfig(layer, config);
 				Assert.areNotEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to remain unchanged (boolean)');

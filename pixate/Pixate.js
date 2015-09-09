@@ -84,7 +84,7 @@ var Pixate = function() {
 		setLayerConfig: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.isConfig('Layer', config, 'config');
+			Pixate.Assert.isConfig('Layer', layer, config, 'config');
 
 		    return executeCommand('setLayerConfig', [layer, config]);
 		},
@@ -227,6 +227,14 @@ var Pixate = function() {
 		    Pixate.Assert.isLayer(layer, 'layer');
 
 		    return executeCommand('getParentLayer', [layer]);
+		},
+
+		setInteractionConfig: function(interaction, config) {
+		    
+			Pixate.Assert.isLayer(interaction, 'interaction');
+			Pixate.Assert.isConfig('Interaction', interaction, config, 'config');
+
+		    return executeCommand('setInteractionConfig', [interaction, config]);
 		}
 	}
 }();

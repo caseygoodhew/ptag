@@ -177,11 +177,10 @@ Pixate.Api = {
 	setLayerConfig: {
 		parameterNames: ['layer', 'config'],
 		custom: function(layer, config) {
-			//layer = layer.result || layer;
 			
 			var validAttributes = [];
 			for (var x in Pixate.Api.Properties.Layer) {
-				if (!Pixate.Api.Properties.Layer.readOnly) {
+				if (!Pixate.Api.Properties.Layer[x].readOnly) {
 					validAttributes.push(x);
 				}
 			}
@@ -226,9 +225,58 @@ Pixate.Api = {
 
 			return Pixate[interaction.handler].call(Pixate, layer);
 		}
+	},
+
+	setInteractionConfig: {
+		parameterNames: ['interaction', 'config'],
+		custom: function(interaction, config) {
+			
+			var validAttributes = [];
+			for (var x in Pixate.Api.Properties.Interaction) {
+				
+				var property = Pixate.Api.Properties.Interaction[x];
+
+				var isValid = !property.readOnly;
+
+				if (isValid && property.forType) {
+					isValid = Pixate.contains(property.forType, interaction.type);
+				}
+
+				if (isValid) {
+					validAttributes.push(x);
+				}
+			}
+
+			config = Pixate.include(config, validAttributes);
+
+			for (var x in config) {
+				var property = Pixate.Api.Properties.Interaction[x];
+
+				if (property.type === 'string') {
+					config[x] = ''+config[x];
+				} else if (property.type === 'number') {
+
+				}
+			}
+
+			Pixate.apply(interaction, config);
+		}
 	}
 };
-
+/*
+		Interaction: {
+			id: { type: 'string', readOnly: true },
+			type: { type: 'string', readOnly: true },
+			min: { type: 'number' },
+			minReferenceEdge: { type: 'Edge', forType: ['drag'] },
+			max: { type: 'number' },
+			maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
+			stretchMin : { type: 'number', min: 10, max: 10 },
+			stretchMax : { type: 'number', min: 10, max: 10 },
+			direction: { type: 'DragDirection', forType: ['drag'] },
+			paging: { type: 'PagingMode', forType: ['paging'] }
+		},
+*/
 
 try
 {

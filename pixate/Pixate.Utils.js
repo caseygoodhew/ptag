@@ -18,7 +18,7 @@ Pixate.Utils = {
 
 		var include = {};
 
-		for (var i = 1; i < paramInclude.length; i++) {
+		for (var i = 0; i < paramInclude.length; i++) {
 			include[paramInclude[i]] = true;
 		}
 
@@ -214,6 +214,18 @@ Pixate.Utils = {
 				}
 			}
 		}
+	},
+
+	contains: function(array, value) {
+		var found = false;
+		
+		if (Pixate.isArray(array)) {
+			for (var i = 0; !found && i < array.length; i++) {
+				found = array[i] === value;
+			}
+		}
+		
+		return found;
 	}
 };
 

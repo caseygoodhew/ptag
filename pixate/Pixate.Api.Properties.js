@@ -60,8 +60,8 @@ Pixate.Api.Properties = function(){
 			minReferenceEdge: { type: 'Edge', forType: ['drag'] },
 			max: { type: 'number' },
 			maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			stretchMin : { type: 'number', min: 10, max: 10 },
-			stretchMax : { type: 'number', min: 10, max: 10 },
+			stretchMin : { type: 'number', min: 0, max: 10 },
+			stretchMax : { type: 'number', min: 0, max: 10 },
 			direction: { type: 'DragDirection', forType: ['drag'] },
 			paging: { type: 'PagingMode', forType: ['paging'] }
 		},
