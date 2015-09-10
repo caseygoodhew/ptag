@@ -56,7 +56,7 @@ Pixate.Api = {
 		returnType: 'Interaction',
 		returns: ['(function() { ',
 		'	if (!layer.interactions.drag) { ',
-		'		layer.interactions.drag = { type: Pixate.Api.Types.Interaction.Drag.type }; ',
+		'		layer.interactions.drag = { type: Pixate.Api.Types.Interaction.Drag.type, id: Pixate.id() }; ',
 		'		layer.animations.push(Pixate.apply({ basedOn: "drag" }, Pixate.Api.Types.Interaction.Drag.events.position.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.drag; ',
@@ -66,19 +66,19 @@ Pixate.Api = {
 	createTapInteraction: {
 		parameterNames: ['layer'],
 		returnType: 'Interaction',
-		returns: 'layer.interactions.tap = layer.interactions.tap || { type: Pixate.Api.Types.Interaction.Tap.type }'
+		returns: 'layer.interactions.tap = layer.interactions.tap || { type: Pixate.Api.Types.Interaction.Tap.type, id: Pixate.id() }'
 	},
 
 	createDoubleTapInteraction: {
 		parameterNames: ['layer'],
 		returnType: 'Interaction',
-		returns: 'layer.interactions.doubletap = layer.interactions.doubletap || { type: Pixate.Api.Types.Interaction.DoubleTap.type }'
+		returns: 'layer.interactions.doubletap = layer.interactions.doubletap || { type: Pixate.Api.Types.Interaction.DoubleTap.type, id: Pixate.id() }'
 	},
 
 	createLongPressInteraction: {
 		parameterNames: ['layer'],
 		returnType: 'Interaction',
-		returns: 'layer.interactions.longpress = layer.interactions.longpress || { type: Pixate.Api.Types.Interaction.LongPress.type }'
+		returns: 'layer.interactions.longpress = layer.interactions.longpress || { type: Pixate.Api.Types.Interaction.LongPress.type, id: Pixate.id() }'
 	},
 
 	createRotateInteraction: {
@@ -86,7 +86,7 @@ Pixate.Api = {
 		returnType: 'Interaction',
 		returns: ['(function() { ',
 		'	if (!layer.interactions.rotate) { ',
-		'		layer.interactions.rotate = { type: Pixate.Api.Types.Interaction.Rotate.type }; ',
+		'		layer.interactions.rotate = { type: Pixate.Api.Types.Interaction.Rotate.type, id: Pixate.id() }; ',
 		'		layer.animations.push(Pixate.apply({ basedOn: "rotate" }, Pixate.Api.Types.Interaction.Rotate.events.rotate.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.rotate; ',
@@ -98,7 +98,7 @@ Pixate.Api = {
 		returnType: 'Interaction',
 		returns: ['(function() { ',
 		'	if (!layer.interactions.pinch) { ',
-		'		layer.interactions.pinch = { type: Pixate.Api.Types.Interaction.Pinch.type }; ',
+		'		layer.interactions.pinch = { type: Pixate.Api.Types.Interaction.Pinch.type, id: Pixate.id() }; ',
 		'		layer.animations.push(Pixate.apply({ basedOn: "pinch" }, Pixate.Api.Types.Interaction.Pinch.events.pinch.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.pinch; ',
@@ -110,7 +110,7 @@ Pixate.Api = {
 		returnType: 'Interaction',
 		returns: ['(function() { ',
 		'	if (!layer.interactions.scroll) { ',
-		'		layer.interactions.scroll = { type: Pixate.Api.Types.Interaction.Scroll.type }; ',
+		'		layer.interactions.scroll = { type: Pixate.Api.Types.Interaction.Scroll.type, id: Pixate.id() }; ',
 		'		layer.animations.push(Pixate.apply({ basedOn: "scroll" }, Pixate.Api.Types.Interaction.Scroll.events.postion.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.scroll; ',
@@ -254,8 +254,6 @@ Pixate.Api = {
 
 				if (property.type === 'string') {
 					config[x] = ''+config[x];
-				} else if (property.type === 'number') {
-
 				}
 			}
 

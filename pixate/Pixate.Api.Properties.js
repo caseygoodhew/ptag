@@ -56,14 +56,14 @@ Pixate.Api.Properties = function(){
 		Interaction: {
 			id: { type: 'string', readOnly: true },
 			type: { type: 'string', readOnly: true },
-			min: { type: 'number' },
+			min: { type: 'number', forType: ['Pixate does not support this attribute even though its in the API docs'] },
 			minReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			max: { type: 'number' },
+			max: { type: 'number', forType: ['Pixate does not support this attribute even though its in the API docs'] },
 			maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			stretchMin : { type: 'number', min: 0, max: 10 },
-			stretchMax : { type: 'number', min: 0, max: 10 },
+			stretchMin : { type: 'number', min: 0, max: 10, forType: ['Pixate does not support this attribute even though its in the API docs'] },
+			stretchMax : { type: 'number', min: 0, max: 10, forType: ['Pixate does not support this attribute even though its in the API docs'] },
 			direction: { type: 'DragDirection', forType: ['drag'] },
-			paging: { type: 'PagingMode', forType: ['paging'] }
+			paging: { type: 'PagingMode', forType: ['scroll'] }
 		},
 
 		Animation: {
