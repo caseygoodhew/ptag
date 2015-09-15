@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	getLayerByName: [{
 		name: 'returns null when layer does not exist',

@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	createLayer: [{
 		name: 'with no parameters fails',

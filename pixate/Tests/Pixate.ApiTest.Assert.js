@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.Assert = function() {
 
 	var messages = [];
@@ -10,6 +12,24 @@ Pixate.ApiTest.Assert = function() {
 		return result;
 	}
 
+	var objectify = function(o) {
+		if (!o || typeof o !== 'object' || Pixate.isArray(o)) {
+			return o;
+		}
+
+		var result = [];
+
+		for (var x in o) {
+			result.push({ a: x, v: o[0] });
+		}
+
+		result.sort(function(a, b) {
+			return a.a < b.a;
+		});
+
+		return result;
+	};
+
 	var stringify = function(arg) {
 		if (arg === undefined) {
 			return 'undefined';
@@ -18,7 +38,7 @@ Pixate.ApiTest.Assert = function() {
 		} else if (typeof arg === 'string') {
 			return '"'+arg+'"';
 		} else if (typeof arg === 'object') {
-			return JSON.stringify(arg);
+			return JSON.stringify(objectify(arg));
 		}
 
 		return arg+'';

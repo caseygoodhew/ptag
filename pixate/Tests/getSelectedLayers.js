@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	getSelectedLayers: [{
 		name: 'returns array with selected layer',

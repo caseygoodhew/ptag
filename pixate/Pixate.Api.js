@@ -56,7 +56,13 @@ Pixate.Api = {
 		returnType: 'Interaction',
 		returns: ['(function() { ',
 		'	if (!layer.interactions.drag) { ',
-		'		layer.interactions.drag = { type: Pixate.Api.Types.Interaction.Drag.type, id: Pixate.id() }; ',
+		'		layer.interactions.drag = { ',
+		'			type: Pixate.Api.Types.Interaction.Drag.type,  ',
+		'			id: Pixate.id(), ',
+		'			direction: Pixate.DragDirection.free, ',
+		'			minReferenceEdge: Pixate.Edge.left, ',
+		'			maxReferenceEdge: Pixate.Edge.left ',
+		'		}; ',
 		'		layer.animations.push(Pixate.apply({ basedOn: "drag" }, Pixate.Api.Types.Interaction.Drag.events.position.defaultAnimation)); ',
 		'	} ',
 		'	return layer.interactions.drag; ',
@@ -217,7 +223,7 @@ Pixate.Api = {
 	createInteraction: {
 		parameterNames: ['layer', 'type'],
 		custom: function(layer, type) {
-			var interaction = Pixate.resolveInteraction(type);
+			var interaction = Pixate.resolveInteractionType(type);
 
 			if (!interaction || !Pixate[interaction.handler]) {
 				return;
@@ -257,24 +263,27 @@ Pixate.Api = {
 				}
 			}
 
+			// Pixate has an order of operations limitation on min/max/stretchMin/stretchMax 
+			// where they only apply to horizontal and vertical DragDirections.
+			// If the DragDirection is set to free when setting one of these values, an error is generated
+			if (interaction.direction !== config.direction) {
+				interaction.direction = config.direction;
+				// only clean up when we're not using pixate studio to emulate it's behaviour 
+				// if they ever fix this, unit testing should start failing
+				if (!Pixate.isPixateStudio()) {
+					delete interaction.min;
+					delete interaction.max;
+					delete interaction.stretchMin;
+					delete interaction.stretchMax;
+					interaction.minReferenceEdge = Pixate.Edge.left;
+					interaction.maxReferenceEdge = Pixate.Edge.left;
+				}
+			}
+
 			Pixate.apply(interaction, config);
 		}
 	}
 };
-/*
-		Interaction: {
-			id: { type: 'string', readOnly: true },
-			type: { type: 'string', readOnly: true },
-			min: { type: 'number' },
-			minReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			max: { type: 'number' },
-			maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			stretchMin : { type: 'number', min: 10, max: 10 },
-			stretchMax : { type: 'number', min: 10, max: 10 },
-			direction: { type: 'DragDirection', forType: ['drag'] },
-			paging: { type: 'PagingMode', forType: ['paging'] }
-		},
-*/
 
 try
 {

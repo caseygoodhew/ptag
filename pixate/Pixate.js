@@ -114,7 +114,7 @@ var Pixate = function() {
 		createInteraction: function(layer, type) {
 			Pixate.Assert.isLayer(layer, 'layer');
 
-			Pixate.Assert.isInteraction(type, 'type');
+			Pixate.Assert.isInteractionType(type, 'type');
 
 			return executeCommand('createInteraction', [layer, type]);
 		},
@@ -231,7 +231,7 @@ var Pixate = function() {
 
 		setInteractionConfig: function(interaction, config) {
 		    
-			Pixate.Assert.isLayer(interaction, 'interaction');
+			Pixate.Assert.isInteraction(interaction, 'interaction');
 			Pixate.Assert.isConfig('Interaction', interaction, config, 'config');
 
 		    return executeCommand('setInteractionConfig', [interaction, config]);

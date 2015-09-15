@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	nestLayers: [{
 		name: 'with one child layer succeeds',

@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	getParentLayer: [{
 		name: 'returns null when not nested',

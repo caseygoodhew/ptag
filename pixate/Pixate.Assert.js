@@ -8,6 +8,11 @@ Pixate.Assert = function() {
 	Pixate.each(['x', 1, true, undefined], function(x) { _baseTypes[typeof(x)] = _primitiveBaseTypes[typeof(x)] = true; });
 	Pixate.each([{}, [], function(){}], function(x) { _baseTypes[typeof(x)] = true; });
 
+	var _interactionTypes = {};
+	for (var x in Pixate.Api.Types.Interaction) {
+		_interactionTypes[Pixate.Api.Types.Interaction[x].type] = true;
+	}
+
 	return {
 
 		FAIL: 'fail',
@@ -37,7 +42,16 @@ Pixate.Assert = function() {
 
 		isInteraction: function(interaction, argument) {
 			
-			return this.fail(!!Pixate.resolveInteraction(interaction), argument, 'Argument is not an interaction.')
+			return this.fail(
+				interaction && 
+				interaction.id && 
+				_interactionTypes[interaction.type], 
+				argument, 
+				'Argument is not an interaction.')
+		},
+
+		isInteractionType: function(type, argument) {
+			return this.fail(!!Pixate.resolveInteractionType(type), argument, 'Argument is not an interaction type.')
 		},
 
 		isAnimation: function(animation, argument) {
@@ -93,11 +107,11 @@ Pixate.Assert = function() {
 						aggregateResult = result && aggregateResult;
 
 						if (result && propertySet[x].min !== undefined) {
-							this.warn(config[x] < propertySet[x].min, subargument, 'Value ' + config[x] + ' is less than min value of ' + propertySet[x].min);
+							aggregateResult = this.fail(!(config[x] < propertySet[x].min), subargument, 'Value ' + config[x] + ' is less than min value of ' + propertySet[x].min) && aggregateResult;
 						} 
 
 						if (result && propertySet[x].max !== undefined) {
-							this.warn(config[x] > propertySet[x].max, subargument, 'Value ' + config[x] + ' is greater than max value of ' + propertySet[x].max);
+							aggregateResult = this.fail(!(config[x] > propertySet[x].max), subargument, 'Value ' + config[x] + ' is greater than max value of ' + propertySet[x].max) && aggregateResult;
 						}
 					
 					} else if (propertySet[x].type === 'Asset') {
@@ -108,6 +122,23 @@ Pixate.Assert = function() {
 									
 						aggregateResult = this.isEnumValue(propertySet[x].type, config[x], subargument, 'Attribute "'+x+'" ('+config[x]+') does not map to valid Pixate.'+propertySet[x].type+' value') && aggregateResult;
 					}
+				}
+			}
+
+			if (propertySetName === 'Interaction' && context.type === 'drag') {
+				var enteringDangerZone = config.min !== undefined || 
+										 config.max !== undefined || 
+										 config.stretchMin !== undefined || 
+										 config.stretchMax !== undefined || 
+										 config.minReferenceEdge !== undefined || 
+										 config.maxReferenceEdge !== undefined;
+				
+				if (enteringDangerZone) {
+					var configHasConcreteDirection = config.direction === Pixate.DragDirection.horizontal || config.direction === Pixate.DragDirection.vertical;
+					var configHasNullifyingDirection = config.direction === Pixate.DragDirection.free;
+					var contextHasConcreteDirection = context.direction === Pixate.DragDirection.horizontal || context.direction === Pixate.DragDirection.vertical;
+
+					aggregateResult = this.fail(configHasConcreteDirection || (!configHasNullifyingDirection && contextHasConcreteDirection), 'direction', 'Direction must be set to horizontal or vertical when setting min/max/stretchMin/stretchMax/minReferenceEdge/maxReferenceEdge') && aggregateResult;
 				}
 			}
 

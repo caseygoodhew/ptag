@@ -57,7 +57,7 @@ Pixate.Utils = {
 		array = array == null ? [] : Pixate.isArray(array) ? array : [array];
 
 		for (var i = 0; i < array.length; i++) {
-			var result = fn.call(scope||array, array[i], i);
+			var result = fn.call(scope||array, array[i], i, array);
 
 			if (result !== undefined) {
 				return result;
@@ -194,7 +194,7 @@ Pixate.Utils = {
 		return result.join('');  
 	}, 
 
-	resolveInteraction: function(type) {
+	resolveInteractionType: function(type) {
 
 
 		if (typeof type === 'string') {

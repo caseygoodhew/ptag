@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	getSelectedLayer: [{
 		name: 'return default Layer (Test Harness)',

@@ -1,3 +1,5 @@
+'use strict';
+
 Pixate.ApiTest.bundle({
 	createRotateInteraction: [{
 		name: 'createOnLayerSucceeds',
