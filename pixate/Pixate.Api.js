@@ -266,7 +266,7 @@ Pixate.Api = {
 			// Pixate has an order of operations limitation on min/max/stretchMin/stretchMax 
 			// where they only apply to horizontal and vertical DragDirections.
 			// If the DragDirection is set to free when setting one of these values, an error is generated
-			if (interaction.direction !== config.direction) {
+			if (config.direction && interaction.direction !== config.direction) {
 				interaction.direction = config.direction;
 				// only clean up when we're not using pixate studio to emulate it's behaviour 
 				// if they ever fix this, unit testing should start failing

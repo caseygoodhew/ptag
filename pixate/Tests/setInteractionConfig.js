@@ -141,6 +141,8 @@ Pixate.ApiTest.bundle({
 		name: 'DragDirection is set before min max stretchMin stretchMax',
 		test: function(Assert, context) {
 			
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+
 			// Test direction set on config after min
 			var configOne = {};
 			configOne.min = 10;
@@ -182,242 +184,195 @@ Pixate.ApiTest.bundle({
 
 			// Test that it doesn't set anything if we set a min value and the direction to free
 			var configTwo = {};
-			configTwo.direction = Pixate.DragDirection.free;
-			configTwo.min = 70;
-			configTwo.minReferenceEdge = Pixate.Edge.bottom;
-
+			configTwo.direction = Pixate.DragDirection.vertical;
+			
 			Pixate.setInteractionConfig(interaction, configTwo);
 			Assert.areEqual(configOne.direction, interaction.direction, 'Expected the direction to STILL be vertical');
 			Assert.areEqual(configOne.min, interaction.min, 'Expected the min value to STILL be set');
 			Assert.areEqual(configOne.minReferenceEdge, interaction.minReferenceEdge, 'Expected the minReferenceEdge to STILL be set');
 
-			// Test that everything is cleared up when the direction is set to free
+			// Test that it doesn't set anything if we set a min value and the direction to free
 			var configThree = {};
 			configThree.direction = Pixate.DragDirection.free;
+			configThree.min = 70;
+			configThree.minReferenceEdge = Pixate.Edge.bottom;
 
 			Pixate.setInteractionConfig(interaction, configThree);
-			Assert.areEqual(configThree.direction, interaction.direction, 'Expected the direction to be free');
+			Assert.areEqual(configOne.direction, interaction.direction, 'Expected the direction to STILL be vertical');
+			Assert.areEqual(configOne.min, interaction.min, 'Expected the min value to STILL be set');
+			Assert.areEqual(configOne.minReferenceEdge, interaction.minReferenceEdge, 'Expected the minReferenceEdge to STILL be set');
+
+			// Test that everything is cleared up when the direction is set to free
+			var configFour = {};
+			configFour.direction = Pixate.DragDirection.free;
+
+			Pixate.setInteractionConfig(interaction, configFour);
+			Assert.areEqual(configFour.direction, interaction.direction, 'Expected the direction to be free');
 			Assert.isNullOrUndefined(interaction.min, 'Expected that the min value would not be set');
 			Assert.areEqual(Pixate.Edge.left, interaction.minReferenceEdge, 'Expected that the minReferenceEdge would be reset');
 
 		}
-	} /*, {
-		
-		Interaction: {
-			id: { type: 'string', readOnly: true },
-			type: { type: 'string', readOnly: true },
-			min: { type: 'number', forType: ['Pixate does not support this attribute even though its in the API docs'] },
-			minReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			max: { type: 'number', forType: ['Pixate does not support this attribute even though its in the API docs'] },
-			maxReferenceEdge: { type: 'Edge', forType: ['drag'] },
-			stretchMin : { type: 'number', min: 0, max: 10, forType: ['Pixate does not support this attribute even though its in the API docs'] },
-			stretchMax : { type: 'number', min: 0, max: 10, forType: ['Pixate does not support this attribute even though its in the API docs'] },
-			direction: { type: 'DragDirection', forType: ['drag'] },
-			paging: { type: 'PagingMode', forType: ['scroll'] }
-		},
-
-
-
-
-
-
-
-		name: 'only sets pixate properties',
-		test: function(Assert, context) {
-			
-			var config = {};
-
-			for (var x in Pixate.Api.Properties.Layer) {
-				if (!Pixate.Api.Properties.Layer[x].readOnly) {
-					config[x] = context.generateRand(Pixate.Api.Properties.Layer[x].type);
-				}
-			}
-
-			config.backgroundColor = Pixate.Api.Colors.Named.Black;
-			config.anyOther = 'value';
-
-			var layer = Pixate.createLayer(config.name);
-
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
-			
-			Pixate.setLayerConfig(layer, config);
-
-			var result = Pixate.getLayerByName(config.name);
-
-			for (var x in Pixate.Api.Properties.Layer) {
-				if (!Pixate.Api.Properties.Layer[x].readOnly) {
-					Assert.areEqual(config[x], result[x], 'Attribute "'+x+'" is not equal');
-				}
-			}
-
-			Assert.isUndefined(result.anyOther, 'Expected "anyOther" to be undefined');
-		}
 	}, {
-		name: 'cannot modify readOnly properties',
+		name: 'min accepts any number',
 		test: function(Assert, context) {
-			
-			var config = { id: 44 };
 
-			var layer = Pixate.createLayer('test');
+			var expectedValue;
 
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
-			
-			Pixate.setLayerConfig(layer, config);
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
 
-			var result = Pixate.getLayerByName(config.name);
+			Pixate.each([0, 10000, -10000, context.rand(1000000, -1000000), null, undefined, true, '10'], function(value) {
 
-			Assert.isTrue(Pixate.Api.Properties.Layer.id.readOnly, 'Expected that id attribute is readOnly');
-			Assert.areNotEqual(config.id, layer.id, 'Expected that id would not equal config.id');
-		}
-	}, {
-		name: 'name accepts expected values',
-		test: function(Assert, context) {
-			
-			var layer = Pixate.createLayer('test');
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
-			
-			Pixate.setLayerConfig(layer, { name: undefined });
-			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (undefined)');
-
-			Pixate.setLayerConfig(layer, { name: null });
-			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (null)');
-
-			Pixate.setLayerConfig(layer, { name: '' });
-			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (empty string)');
-
-			Pixate.setLayerConfig(layer, { name: true });
-			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (true)');
-
-			Pixate.setLayerConfig(layer, { name: false });
-			Assert.areEqual('test', layer.name, 'Expected name to be unchanged (false)');
-
-			Pixate.setLayerConfig(layer, { name: ' ' });
-			Assert.areEqual(' ', layer.name, 'Expected name to be set (one space)');
-
-			var config = {};
-			
-			config.name = context.generateRand('number');
-			Pixate.setLayerConfig(layer, config);
-			Assert.areEqual(''+config.name, layer.name, 'Expected name to be set (number)');
-
-			config.name = context.generateRand('string');
-			Pixate.setLayerConfig(layer, config);
-			Assert.areEqual(''+config.name, layer.name, 'Expected name to be set (string)');	
-		}
-	}, {
-		name: 'backgroundColor accepts expected values',
-		// this test will only run outside of Pixate Studio because PS always returns
-		// the background color as rgb or rgba no matter what it's initially set as
-		when: function() { return !Pixate.isPixateStudio(); },
-		test: function(Assert, context) {
-			
-			var layer = Pixate.createLayer('test');
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
-			
-			var namedColors = []
-			for (var x in Pixate.Api.Colors.Named) {
-				if (typeof Pixate.Api.Colors.Named[x] === 'string') {
-					var rand = Math.floor((Math.random() * 3) + 1);
-					namedColors.push(rand === 1 ? x : rand === 2 ? x.toLowerCase() : x.toUpperCase());
+				if (typeof value === 'number') {
+					expectedValue = value;
 				}
-			}
 
-			Assert.areNotEqual(0, namedColors.length, 'Expected namedColors to contain values');
+				Pixate.setInteractionConfig(interaction, { min: value });
 
-			var config = {};
-
-			Pixate.each(namedColors.concat([
-				'#00ff00',
-				'#FF00FF',
-				'rgb(255, 128, 0)',
-				'rgb(500, 500, 500)',
-				'rgba(100, 100, 100, 0)',
-				'rgba(100, 100, 100, 0.5)',
-				'rgba(100, 100, 100, 1)',
-				'hsl(255, 0.7, 90.4)',
-				'hsl(255, 100, 0)',
-				'hsla(255, 66.66, 0, 0.4)',
-				'transparent',
-				'TRANSPARENT',
-			]), function(expression) {
-				config.backgroundColor = expression;
-				Pixate.setLayerConfig(layer, config);
-				Assert.areEqual(config.backgroundColor, layer.backgroundColor, 'Expected backgroundColor to be set ('+config.backgroundColor+')');
-			});
-
-			Pixate.each([
-				'#00gg00',
-				'#FF00FF0',
-				'rgc(255, 128, 0)',
-				'rgb(100, 10, -100)',
-				'rgba(100, 100, 100)',
-				'rgba(100, 100, 100, -0.5)',
-				'rgba(100, 100, 100, 1.1)',
-				'hsl(255, 100.7, 90.4)',
-				'hsl(255, -100, 0)',
-				'hsla(255, 66.66, 0)',
-				'hsla(255, 66.66, 0, 0.4, 0.1)',
-				'transparen',
-				'TRANSPARENTs',
-			], function(expression) {
-				config.backgroundColor = expression;
-				Pixate.setLayerConfig(layer, config);
-				Assert.areNotEqual(config.backgroundColor, layer.backgroundColor, 'Expected backgroundColor to remain unchanged ('+config.backgroundColor+')');
+				Assert.areEqual(expectedValue, interaction.min, 'Expected ' + expectedValue + ', got ' + interaction.min)
 			});
 		}
 	}, {
-		name: 'number attributes only accept numbers',
+		name: 'max accepts any number',
 		test: function(Assert, context) {
-			var layer = Pixate.createLayer('test');
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
 
-			var testAttribute = function(attribute) {
-				var config = {};
-				
-				config[attribute] = context.generateRand('boolean');
-				Pixate.setLayerConfig(layer, config);
-				Assert.areNotEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to remain unchanged (boolean)');
+			var expectedValue;
 
-				config[attribute] = context.generateRand('string');
-				Pixate.setLayerConfig(layer, config);
-				Assert.areNotEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to remain unchanged (string)');
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
 
-				config[attribute] = context.generateRand('number');
-				Pixate.setLayerConfig(layer, config);
-				Assert.areEqual(config[attribute], layer[attribute], 'Expected ' + attribute + ' to be set (number)');
-			}
+			Pixate.each([0, 10000, -10000, context.rand(1000000, -1000000), null, undefined, true, '10'], function(value) {
 
-			for (var x in Pixate.Api.Properties.Layer) {
-				if (!Pixate.Api.Properties.Layer[x].readOnly && Pixate.Api.Properties.Layer[x].type === 'number') {
-					testAttribute(x);
+				if (typeof value === 'number') {
+					expectedValue = value;
 				}
-			}
+
+				Pixate.setInteractionConfig(interaction, { max: value });
+
+				Assert.areEqual(expectedValue, interaction.max, 'Expected ' + expectedValue + ', got ' + interaction.max)
+			});
 		}
 	}, {
-		name: 'clipping only accepts valid ClippingType',
+		name: 'stretchMin accepts expected numbers',
 		test: function(Assert, context) {
-			var layer = Pixate.createLayer('test');
-			Assert.isNotNullOrUndefined(layer, 'Expected layer');
 
-			var config = {};
+			var minValue = 0;
+			var maxValue = 10;
 
-			config.clipping = Pixate.Api.Enums.ClippingType.none;
-			Pixate.setLayerConfig(layer, config);
-			Assert.areEqual(config.clipping, layer.clipping, 'Expected clipping to be set (ClippingType.none)');
+			var expectedValue;
 
-			config.clipping = Pixate.Api.Enums.ClippingType.bounds;
-			Pixate.setLayerConfig(layer, config);
-			Assert.areEqual(config.clipping, layer.clipping, 'Expected clipping to be set (ClippingType.bounds)');
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
 
-			config.clipping = context.generateRand('string');
-			Pixate.setLayerConfig(layer, config);
-			Assert.areNotEqual(config.clipping, layer.clipping, 'Expected clipping to remain unchanged (random string)');
+			Pixate.each([0, 10, 11, -1, 5, context.rand(1000000, -1000000), context.rand(10, 0), null, undefined, true, '5'], function(value) {
 
-			config.clipping = null;
-			Pixate.setLayerConfig(layer, config);
-			Assert.areNotEqual(config.clipping, layer.clipping, 'Expected clipping to remain unchanged (null)');
+				if (typeof value === 'number' && value >= minValue && value <= maxValue) {
+					expectedValue = value;
+				}
+
+				Pixate.setInteractionConfig(interaction, { stretchMin: value });
+
+				Assert.areEqual(expectedValue, interaction.stretchMin, 'Expected ' + expectedValue + ', got ' + interaction.stretchMin)
+			});
 		}
-	}*/]
+	}, {
+		name: 'stretchMax accepts expected numbers',
+		test: function(Assert, context) {
+
+			var minValue = 0;
+			var maxValue = 10;
+
+			var expectedValue;
+
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
+
+			Pixate.each([0, 10, 11, -1, 5, context.rand(1000000, -1000000), context.rand(10, 0), null, undefined, true, '5'], function(value) {
+
+				if (typeof value === 'number' && value >= minValue && value <= maxValue) {
+					expectedValue = value;
+				}
+
+				Pixate.setInteractionConfig(interaction, { stretchMax: value });
+
+				Assert.areEqual(expectedValue, interaction.stretchMax, 'Expected ' + expectedValue + ', got ' + interaction.stretchMax)
+			});
+		}
+	}, {
+		name: 'minReferenceEdge only accepts Edge enum values',
+		test: function(Assert, context) {
+
+			var expectedValue;
+
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
+
+			var edges = [];
+			for (var x in Pixate.Edge) {
+				edges.push(Pixate.Edge[x]);
+			}
+
+			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
+
+				if (Pixate.isEnumValue(Pixate.Edge, value)) {
+					expectedValue = value;
+				}
+
+				Pixate.setInteractionConfig(interaction, { minReferenceEdge: value });
+
+				Assert.areEqual(expectedValue, interaction.minReferenceEdge, 'Expected ' + expectedValue + ', got ' + interaction.minReferenceEdge)
+			});
+		}
+	}, {
+		name: 'maxReferenceEdge only accepts Edge enum values',
+		test: function(Assert, context) {
+
+			var expectedValue;
+
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
+			interaction.direction = Pixate.DragDirection.vertical;
+
+			var edges = [];
+			for (var x in Pixate.Edge) {
+				edges.push(Pixate.Edge[x]);
+			}
+
+			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
+
+				if (Pixate.isEnumValue(Pixate.Edge, value)) {
+					expectedValue = value;
+				}
+
+				Pixate.setInteractionConfig(interaction, { maxReferenceEdge: value });
+
+				Assert.areEqual(expectedValue, interaction.maxReferenceEdge, 'Expected ' + expectedValue + ', got ' + interaction.maxReferenceEdge)
+			});
+		}
+	}, {
+		name: 'paging only accepts PagingMode enum values',
+		test: function(Assert, context) {
+
+			var expectedValue;
+
+			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'scroll');
+			
+			var edges = [];
+			for (var x in Pixate.PagingMode) {
+				edges.push(Pixate.PagingMode[x]);
+			}
+
+			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
+
+				if (Pixate.isEnumValue(Pixate.PagingMode, value)) {
+					expectedValue = value;
+				}
+
+				Pixate.setInteractionConfig(interaction, { paging: value });
+
+				Assert.areEqual(expectedValue, interaction.paging, 'Expected ' + expectedValue + ', got ' + interaction.paging)
+			});
+		}
+	}]
 });
 
 

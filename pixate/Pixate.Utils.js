@@ -145,31 +145,10 @@ Pixate.Utils = {
 			names.push(name);
 		});
 
-		/*Pixate.each(parameterValues, function(value, index) {
-			var valueType = typeof value;
-			
-			if (value === undefined) {
-				values.push('undefined');
-			} else if (value === null) {
-				values.push('null');
-			} else if (valueType === 'string') {
-				values.push('"'+value+'"');
-			} else if (valueType === 'boolean') {
-				values.push(value);
-			} else if (valueType === 'number') {
-				values.push(value);
-			} else {
-				Pixate.fail('EVAL PARAMETER VALUE (INDEX '+index+') IS UNSUPPORTED TYPE ' + valueType.toUpperCase());
-				hasErrors = true;
-			}
-		});
-		*/
 		if (hasErrors) {
 			return;
 		}
 
-		//return eval('(function('+names.join(', ')+') { return '+expression+'; })('+values.join(', ')+')');
-		
 		return function() { return eval('(function('+names.join(', ')+') { return '+expression+'; }).apply(this, this)'); }.call(parameterValues);
 	},
 
@@ -226,6 +205,16 @@ Pixate.Utils = {
 		}
 		
 		return found;
+	},
+
+	isEnumValue: function(_enum, value) {
+		for (var x in _enum) {
+			if (_enum[x] === value) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 };
 
