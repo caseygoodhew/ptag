@@ -161,6 +161,27 @@ Pixate.Assert = function() {
 			return this.fail(enumMap[value], argument, message);
 		},
 
+		hasAttributes: function(obj, argument, attributes) {
+
+			var result = true;
+
+			if (!obj) {
+				result = this.fail(false, argument, 'Argument is not an object');
+			}
+
+			if (!attributes) {
+				result = this.fail(false, argument, 'Attrributes are not defined');
+			}
+
+			if (result) {
+				Pixate.each(attributes, function(attribute) {
+					result = this.fail(!!obj[attribute], attribute, 'Attribute is not set') && result;
+				}, this);
+			}
+
+			return result;
+		},
+
 		fail: function(result, argument, failMessage, successMessage) {
 			return this.assert(result, argument, Pixate.Assert.FAIL, failMessage, successMessage);
 		},

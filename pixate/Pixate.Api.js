@@ -125,37 +125,79 @@ Pixate.Api = {
 
 	createMoveAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Move", ',
+		'	type: Pixate.Api.Types.Animation.Move.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createRotateAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Rotate", ',
+		'	type: Pixate.Api.Types.Animation.Rotate.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createScaleAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Scale", ',
+		'	type: Pixate.Api.Types.Animation.Scale.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createFadeAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Fade", ',
+		'	type: Pixate.Api.Types.Animation.Fade.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createColorAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Color", ',
+		'	type: Pixate.Api.Types.Animation.Color.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createImageAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Image", ',
+		'	type: Pixate.Api.Types.Animation.Image.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	createReorderAnimation: {
 		parameterNames: ['layer'],
-		returnType: 'Animation'
+		returnType: 'Animation',
+		returns: ['{ ',
+		'	id: Pixate.id(), ',
+		'	name: "Reorder Layer", ',
+		'	type: Pixate.Api.Types.Animation.Reorder.type, ',
+		'	animates: Pixate.AnimationMode.withDuration ',
+		'}'].join('')
 	},
 
 	selectLayer: {
