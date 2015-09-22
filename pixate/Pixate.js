@@ -164,8 +164,10 @@ var Pixate = function() {
 		createMoveAnimation: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.basedOnIsValid(config.basedOn, 'config');
+			}
 
 		    var animation = executeCommand('createMoveAnimation', [layer]);
 
@@ -179,8 +181,10 @@ var Pixate = function() {
 		createRotateAnimation: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createRotateAnimation', [layer]);
 
@@ -194,8 +198,10 @@ var Pixate = function() {
 		createScaleAnimation: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createScaleAnimation', [layer]);
 
@@ -209,8 +215,10 @@ var Pixate = function() {
 		createFadeAnimation: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createFadeAnimation', [layer]);
 
@@ -224,8 +232,10 @@ var Pixate = function() {
 		createColorAnimation: function(layer, config) {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createColorAnimation', [layer]);
 
@@ -239,8 +249,10 @@ var Pixate = function() {
 		createImageAnimation: function(layer, config) {
 		    
 		    Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createImageAnimation', [layer]);
 
@@ -254,8 +266,10 @@ var Pixate = function() {
 		createReorderAnimation: function(layer, config) {
 		    
 		    Pixate.Assert.isLayer(layer, 'layer');
-			Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
-			Pixate.Assert.isConfig('Animation', layer, config, 'config');
+			
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+				Pixate.Assert.hasAttributes(config, 'config', ['basedOn']);
+			}
 
 		    var animation = executeCommand('createReorderAnimation', [layer]);
 

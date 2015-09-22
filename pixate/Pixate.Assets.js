@@ -24,17 +24,17 @@ Pixate.Assets = function() {
 			return !!this.findLayer(layer.name);
 		},
 
-		findLayer: function(nameOrLayer) {
+		findLayer: function(nameOrIdOrLayer) {
 			
-			if (!nameOrLayer) {
+			if (!nameOrIdOrLayer) {
 				return null;
 			}
 
-			var name = typeof nameOrLayer === 'string' ? nameOrLayer : nameOrLayer.name;
+			var nameOrId = typeof nameOrIdOrLayer === 'string' ? nameOrIdOrLayer : nameOrIdOrLayer._id;
 
-			if (name) {
+			if (nameOrId) {
 				for (var i = 0; i < layers.length; i++) {
-					if (layers[i].name === name) {
+					if (layers[i]._id === nameOrId || layers[i].name === nameOrId) {
 						return layers[i];
 					}
 				}

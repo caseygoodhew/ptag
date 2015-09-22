@@ -161,6 +161,32 @@ Pixate.Assert = function() {
 			return this.fail(enumMap[value], argument, message);
 		},
 
+		basedOnIsValid: function(basedOn, argument) {
+
+			if (!basedOn) {
+				return this.fail(false, argument + '.basedOn', 'Attribute is not set')
+			}
+
+			if (typeof basedOn !== 'object') {
+				return this.fail(false, argument + '.basedOn', 'Attribute is not an object')
+			}
+
+			var interactionEvent = Pixate.resolveInteractionEvent(basedOn.event || basedOn.basedOnEvent);
+			var source = Pixate.Assets.findLayer(basedOn.source || basedOn.basedOnSource);
+			
+			var eventResult = this.fail(!interactionEvent, argument + '.basedOn.event', 'Could not resolve interaction event');
+			if (eventResult) {
+				eventResult = this.fail(!interactionEvent.canAnimate, argument + '.basedOn.event', 'Event ('+interactionEvent.event+') cannot be used for animations');
+			}
+
+			var sourceResult = this.fail(!source, argument + '.basedOn.source', 'Could not resolve source'); 
+			if (sourceResult && eventResult) {
+				sourceResult = this.fail(!source.interactions[interactionEvent.interaction.type], argument + '.basedOn.source', 'Source layer does not have a '+interactionEvent.interaction.type+' interaction')
+			}
+
+			return eventResult && sourceResult;
+		},
+
 		hasAttributes: function(obj, argument, attributes) {
 
 			var result = true;
@@ -175,7 +201,7 @@ Pixate.Assert = function() {
 
 			if (result) {
 				Pixate.each(attributes, function(attribute) {
-					result = this.fail(!!obj[attribute], attribute, 'Attribute is not set') && result;
+					result = this.fail(!!obj[attribute], argument + '.' + attribute, 'Attribute is not set') && result;
 				}, this);
 			}
 

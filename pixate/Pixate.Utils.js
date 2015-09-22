@@ -195,6 +195,27 @@ Pixate.Utils = {
 		}
 	},
 
+	resolveInteractionEvent: function(event) {
+		if (typeof event !== 'string') {
+			return;
+		}
+
+		for (var type in Pixate.Api.Types.Interaction) {
+			for (var x in Pixate.Api.Types.Interaction[type]) {
+				
+				var interactionEvent = Pixate.Api.Types.Interaction[type][x];
+				
+				if (interactionEvent === x || interactionEvent.name === x) {
+					return { 
+						interaction: Pixate.Api.Types.Interaction[type], 
+						event: x, 
+						canAnimate: interactionEvent.canAnimate !== false 
+					};
+				}
+			}
+		}
+	},
+
 	contains: function(array, value) {
 		var found = false;
 		
