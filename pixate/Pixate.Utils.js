@@ -14,13 +14,19 @@ Pixate.Utils = {
 		return Object.prototype.toString.call(object) === '[object Array]';
 	},
 
+	map: function(params) {
+		var map = {};
+
+		Pixate.each(params, function(p) {
+			map[p] = true;
+		});
+
+		return map;
+	},
+
 	include: function(source, paramInclude) {
 
-		var include = {};
-
-		for (var i = 0; i < paramInclude.length; i++) {
-			include[paramInclude[i]] = true;
-		}
+		var include = Pixate.map(paramInclude);
 
 		var result = {};
 
@@ -35,11 +41,7 @@ Pixate.Utils = {
 
 	exclude: function(source, paramExclude) {
 
-		var exclude = {};
-
-		for (var i = 0; i < paramExclude.length; i++) {
-			exclude[paramExclude[i]] = true;
-		}
+		var exclude = Pixate.map(paramExclude);
 
 		var result = {};
 
@@ -201,9 +203,9 @@ Pixate.Utils = {
 		}
 
 		for (var type in Pixate.Api.Types.Interaction) {
-			for (var x in Pixate.Api.Types.Interaction[type]) {
+			for (var x in Pixate.Api.Types.Interaction[type].events) {
 				
-				var interactionEvent = Pixate.Api.Types.Interaction[type][x];
+				var interactionEvent = Pixate.Api.Types.Interaction[type].events[x];
 				
 				if (interactionEvent === x || interactionEvent.name === x) {
 					return { 
@@ -236,6 +238,10 @@ Pixate.Utils = {
 		}
 
 		return false;
+	},
+
+	basedOn: function(source, event) {
+		return { basedOn: { source: source, event: event } };
 	}
 };
 

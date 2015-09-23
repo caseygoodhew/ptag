@@ -165,7 +165,7 @@ var Pixate = function() {
 		    
 			Pixate.Assert.isLayer(layer, 'layer');
 			
-			if (Pixate.Assert.isConfig('Animation', layer, config, 'config')) {
+			if (Pixate.Assert.isConfig('Animation', layer, config, 'config', ['basedOn'])) {
 				Pixate.Assert.basedOnIsValid(config.basedOn, 'config');
 			}
 
@@ -302,6 +302,13 @@ var Pixate = function() {
 			Pixate.Assert.isConfig('Interaction', interaction, config, 'config');
 
 		    return executeCommand('setInteractionConfig', [interaction, config]);
+		},
+
+		setAnimationConfig: function(animation, config) {
+			Pixate.Assert.isAnimation(animation, 'animation');
+			Pixate.Assert.isConfig('Animation', animation, config, 'config');
+
+		    return executeCommand('setAnimationConfig', [animation, config]);	
 		}
 	}
 }();

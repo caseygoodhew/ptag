@@ -2,14 +2,27 @@
 
 Pixate.ApiTest.bundle({
 	createMoveAnimation: [{
-		name: 'without layer does not create animation',
+		name: 'creates animation',
+		test: function(Assert) {
+			var layer = Pixate.createLayer('layer');
+
+			var interaction = Pixate.createTapInteraction(layer);
+
+			Assert.isNotNullOrUndefined(interaction, 'Expected interaction to exist');
+
+			var animation = Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap'));
+
+			Assert.isNotNullOrUndefined(animation, 'Expected animation to exist');
+		}
+	}, {
+		name: 'does not create animation without layer',
 		test: function(Assert) {
 			var animation = Pixate.createMoveAnimation(null, { });
 
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
 	}, {
-		name: 'without config does not create animation',
+		name: 'does not create animation without config',
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
@@ -18,7 +31,7 @@ Pixate.ApiTest.bundle({
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
 	}, {
-		name: 'without basedOn does not create animation',
+		name: 'does not create animation without basedOn',
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
@@ -27,13 +40,13 @@ Pixate.ApiTest.bundle({
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
 	}, {
-		name: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -> this should be failing because the interaction has not been created',
+		name: 'does not create animation without interaction',
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
-			var animation = Pixate.createMoveAnimation(layer, { basedOn: { source: layer, event: 'tap' }});
+			var animation = Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap'));
 
-			Assert.isNotNullOrUndefined(animation, 'Expected animation to be created');
+			Assert.isNullOrUndefined(animation, 'Expected animation to be created');
 		}
 	}]
 });

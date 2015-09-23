@@ -58,69 +58,73 @@ Pixate.Assert = function() {
 			return this.fail(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
 		},
 
-		isConfig: function(propertySetName, context, config, argument) {
+		isConfig: function(propertySetName, context, config, argument, exclude) {
 			if (!config || typeof config !== 'object' || Pixate.isArray(config)) {
 				return this.fail(false, argument, 'Argument must be a pure object');
 			}
 
+			var exclude = Pixate.map(exclude);
 			var propertySet = Pixate.Api.Properties[propertySetName];
 			var aggregateResult = true;
 
 			for (var x in config) {
-				var subargument = argument + '["'+x+'"]';
-				var attributeType = typeof config[x];
+				if (!exclude[x]) {
 
-				if (!propertySet[x]) {
-				
-					// don't aggregate warn
-					this.warn(false, subargument, 'Attribute "'+x+'" is not defined in property set "'+propertySetName+'"');
-				
-				} else if (propertySet[x].readOnly) {
-				
-					aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" is read only') && aggregateResult;
-				
-				} else if (propertySet[x].forType && !Pixate.contains(propertySet[x].forType, (context||{}).type)) {
+					var subargument = argument + '["'+x+'"]';
+					var attributeType = typeof config[x];
 
-					aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" of type "'+(context||{}).type+'" is not in forType ('+propertySet[x].forType.join()+')') && aggregateResult;
-
-				} else {
-
-					if (propertySet[x].validator) {
-						var result = propertySet[x].validator(config[x]);
-
-						if (result === true) {
-							// do nothing
-						} else if (result === false) {
-							aggregateResult = this.fail(false, subargument, 'Invalid value') && aggregateResult;
-						} else if (typeof result === 'string') {
-							aggregateResult = this.fail(false, subargument, result) && aggregateResult;
-						} else if (typeof result === 'object' && result.fail) {
-							aggregateResult = this.fail(false, subargument, result.fail) && aggregateResult;
-						} else if (typeof result === 'object' && result.warn) {
-							this.warn(false, subargument, result.warn);
-						} else {
-							this.warn(false, subargument, 'Validitor was indeterminate');
-						} 
-					} else if (_primitiveBaseTypes[propertySet[x].type]) {
+					if (!propertySet[x]) {
 					
-						var result = this.fail(typeof config[x] === propertySet[x].type, subargument, 'Unexpected value type');
-						aggregateResult = result && aggregateResult;
+						// don't aggregate warn
+						this.warn(false, subargument, 'Attribute "'+x+'" is not defined in property set "'+propertySetName+'"');
+					
+					} else if (propertySet[x].readOnly) {
+					
+						aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" is read only') && aggregateResult;
+					
+					} else if (propertySet[x].forType && !Pixate.contains(propertySet[x].forType, (context||{}).type)) {
 
-						if (result && propertySet[x].min !== undefined) {
-							aggregateResult = this.fail(!(config[x] < propertySet[x].min), subargument, 'Value ' + config[x] + ' is less than min value of ' + propertySet[x].min) && aggregateResult;
-						} 
+						aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" of type "'+(context||{}).type+'" is not in forType ('+propertySet[x].forType.join()+')') && aggregateResult;
 
-						if (result && propertySet[x].max !== undefined) {
-							aggregateResult = this.fail(!(config[x] > propertySet[x].max), subargument, 'Value ' + config[x] + ' is greater than max value of ' + propertySet[x].max) && aggregateResult;
+					} else {
+
+						if (propertySet[x].validator) {
+							var result = propertySet[x].validator(config[x]);
+
+							if (result === true) {
+								// do nothing
+							} else if (result === false) {
+								aggregateResult = this.fail(false, subargument, 'Invalid value') && aggregateResult;
+							} else if (typeof result === 'string') {
+								aggregateResult = this.fail(false, subargument, result) && aggregateResult;
+							} else if (typeof result === 'object' && result.fail) {
+								aggregateResult = this.fail(false, subargument, result.fail) && aggregateResult;
+							} else if (typeof result === 'object' && result.warn) {
+								this.warn(false, subargument, result.warn);
+							} else {
+								this.warn(false, subargument, 'Validitor was indeterminate');
+							} 
+						} else if (_primitiveBaseTypes[propertySet[x].type]) {
+						
+							var result = this.fail(typeof config[x] === propertySet[x].type, subargument, 'Unexpected value type');
+							aggregateResult = result && aggregateResult;
+
+							if (result && propertySet[x].min !== undefined) {
+								aggregateResult = this.fail(!(config[x] < propertySet[x].min), subargument, 'Value ' + config[x] + ' is less than min value of ' + propertySet[x].min) && aggregateResult;
+							} 
+
+							if (result && propertySet[x].max !== undefined) {
+								aggregateResult = this.fail(!(config[x] > propertySet[x].max), subargument, 'Value ' + config[x] + ' is greater than max value of ' + propertySet[x].max) && aggregateResult;
+							}
+						
+						} else if (propertySet[x].type === 'Asset') {
+
+							aggregateResult = this.isAsset(config[x], subargument) && aggregateResult;	
+
+						} else if (!_primitiveBaseTypes[propertySet[x].type]) {
+										
+							aggregateResult = this.isEnumValue(propertySet[x].type, config[x], subargument, 'Attribute "'+x+'" ('+config[x]+') does not map to valid Pixate.'+propertySet[x].type+' value') && aggregateResult;
 						}
-					
-					} else if (propertySet[x].type === 'Asset') {
-
-						aggregateResult = this.isAsset(config[x], subargument) && aggregateResult;	
-
-					} else if (!_primitiveBaseTypes[propertySet[x].type]) {
-									
-						aggregateResult = this.isEnumValue(propertySet[x].type, config[x], subargument, 'Attribute "'+x+'" ('+config[x]+') does not map to valid Pixate.'+propertySet[x].type+' value') && aggregateResult;
 					}
 				}
 			}
@@ -173,15 +177,15 @@ Pixate.Assert = function() {
 
 			var interactionEvent = Pixate.resolveInteractionEvent(basedOn.event || basedOn.basedOnEvent);
 			var source = Pixate.Assets.findLayer(basedOn.source || basedOn.basedOnSource);
-			
-			var eventResult = this.fail(!interactionEvent, argument + '.basedOn.event', 'Could not resolve interaction event');
-			if (eventResult) {
-				eventResult = this.fail(!interactionEvent.canAnimate, argument + '.basedOn.event', 'Event ('+interactionEvent.event+') cannot be used for animations');
+
+			var eventResult = this.fail(!!interactionEvent, argument + '.basedOn.event', 'Could not resolve interaction event');
+			if (eventResult) { 
+				eventResult = this.fail(interactionEvent.canAnimate !== false, argument + '.basedOn.event', 'Event ('+interactionEvent.event+') cannot be used for animations');
 			}
 
-			var sourceResult = this.fail(!source, argument + '.basedOn.source', 'Could not resolve source'); 
+			var sourceResult = this.fail(!!source, argument + '.basedOn.source', 'Could not resolve source'); 
 			if (sourceResult && eventResult) {
-				sourceResult = this.fail(!source.interactions[interactionEvent.interaction.type], argument + '.basedOn.source', 'Source layer does not have a '+interactionEvent.interaction.type+' interaction')
+				sourceResult = this.fail(!!source.interactions[interactionEvent.interaction.type], argument + '.basedOn.source', 'Source layer does not have a '+interactionEvent.interaction.type+' interaction');
 			}
 
 			return eventResult && sourceResult;

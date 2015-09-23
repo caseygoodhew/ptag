@@ -324,6 +324,13 @@ Pixate.Api = {
 
 			Pixate.apply(interaction, config);
 		}
+	}, 
+
+	setAnimationConfig: {
+		parameterNames: ['animation', 'config'],
+		custom: function(animation, config) {
+			// do nothing (for now...)
+		}
 	}
 };
 
