@@ -5,13 +5,13 @@ Pixate.Api = Pixate.Api || {};
 Pixate.Api.Types = {};
 
 Pixate.Api.Types.Animation = {
-	Move: { type: 'move', handler: 'createMoveAnimation' },
-    Rotate: { type: 'rotate', handler: 'createRotateAnimation' },
-    Scale: { type: 'scale', handler: 'createScaleAnimation' },
-    Fade: { type: 'fade', handler: 'createFadeAnimation' },
-    Color: { type: 'color', handler: 'createColorAnimation' },
-    Image: { type: 'image', handler: 'createImageAnimation' },
-    Reorder: { type: 'reorder', handler: 'createReorderAnimation' },
+	Move: { type: 'move', defaultName: 'Move', handler: 'createMoveAnimation' },
+    Rotate: { type: 'rotate', defaultName: 'Rotate', handler: 'createRotateAnimation' },
+    Scale: { type: 'scale', defaultName: 'Scale', handler: 'createScaleAnimation' },
+    Fade: { type: 'fade', defaultName: 'Fade', handler: 'createFadeAnimation' },
+    Color: { type: 'color', defaultName: 'Color', handler: 'createColorAnimation' },
+    Image: { type: 'image', defaultName: 'Image', handler: 'createImageAnimation' },
+    Reorder: { type: 'reorder', defaultName: 'Reorder Layer', handler: 'createReorderAnimation' },
 };
 	
 Pixate.Api.Types.Interaction = {

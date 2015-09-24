@@ -12,7 +12,17 @@ Pixate.ApiTest.bundle({
 
 			var animation = Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap'));
 
-			Assert.isNotNullOrUndefined(animation, 'Expected animation to exist');
+			if (Assert.isNotNullOrUndefined(animation, 'Expected animation to exist')) {
+
+				if (Assert.areEqual(1, layer.animations.length, 'Expected layer.animations to contain one animation')) {
+					Assert.areSame(layer.animations[0], animation, 'Expected layer.animations to contain animation')
+				}
+
+				Assert.isNotNullOrUndefined(animation.id, 'Expected id to be set');
+				Assert.areEqual(Pixate.Api.Types.Animation.Move.type, animation.type, 'Unexpected animation type "'+animation.type+'"');
+				Assert.areEqual(Pixate.Api.Types.Animation.Move.defaultName, animation.name, 'Unexpected animation name "'+animation.name+'"');
+				Assert.areEqual(Pixate.AnimationMode.withDuration, animation.animates, 'Unexpected animation mode "'+animation.animates+'"');
+			}
 		}
 	}, {
 		name: 'does not create animation without layer',

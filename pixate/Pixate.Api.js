@@ -126,78 +126,106 @@ Pixate.Api = {
 	createMoveAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Move", ',
-		'	type: Pixate.Api.Types.Animation.Move.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Move.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Move.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createRotateAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Rotate", ',
-		'	type: Pixate.Api.Types.Animation.Rotate.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Rotate.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Rotate.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createScaleAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Scale", ',
-		'	type: Pixate.Api.Types.Animation.Scale.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Scale.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Scale.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createFadeAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Fade", ',
-		'	type: Pixate.Api.Types.Animation.Fade.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Fade.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Fade.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createColorAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Color", ',
-		'	type: Pixate.Api.Types.Animation.Color.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Color.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Color.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createImageAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Image", ',
-		'	type: Pixate.Api.Types.Animation.Image.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Image.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Image.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	createReorderAnimation: {
 		parameterNames: ['layer'],
 		returnType: 'Animation',
-		returns: ['{ ',
-		'	id: Pixate.id(), ',
-		'	name: "Reorder Layer", ',
-		'	type: Pixate.Api.Types.Animation.Reorder.type, ',
-		'	animates: Pixate.AnimationMode.withDuration ',
-		'}'].join('')
+		returns: ['(function() { ',
+		'	var animation = { ',
+		'		id: Pixate.id(), ',
+		'		name: Pixate.Api.Types.Animation.Reorder.defaultName, ',
+		'		type: Pixate.Api.Types.Animation.Reorder.type, ',
+		'		animates: Pixate.AnimationMode.withDuration ',
+		'	}; ',
+		'	layer.animations.push(animation); ', 
+		'	return animation; ',
+		'})()'].join('')
 	},
 
 	selectLayer: {
@@ -329,7 +357,7 @@ Pixate.Api = {
 	setAnimationConfig: {
 		parameterNames: ['animation', 'config'],
 		custom: function(animation, config) {
-			// do nothing (for now...)
+			return Pixate.apply(animation, config);
 		}
 	}
 };
