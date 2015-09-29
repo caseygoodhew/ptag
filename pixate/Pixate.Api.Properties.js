@@ -67,17 +67,21 @@ Pixate.Api.Properties = function(){
 		},
 
 		Animation: {
+			basedOn: { type: 'InteractionEvent' },
 			conditions: { type: 'AnimationCondition[]', readOnly: true }
 		},
 
 		AnimationCondition: {
 			id: { type: 'string', readOnly: true },
 			type: { type: 'string', readOnly: true },
-			name: { type: 'string' },
+			name: { type: 'string',
+				validator: function(value) {
+					return !!(value && typeof value === 'string');
+				}
+			},
 			enabled: { type: 'boolean' },
 			collapsed: { type: 'boolean' },
 			animates: { type: 'AnimationMode' },
-			basedOn: { type: 'InteractionEvent' },
 			referenceEdge: { type: 'Edge', forInteraction: ['drag'] },
 			begin: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },
 			end: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },
@@ -85,7 +89,7 @@ Pixate.Api.Properties = function(){
 			to: [{ 
 				type: 'Asset', 
 				forType: ['image'], 
-				forAnimationMode: [Pixate.AnimationMode.withDuration]
+			forAnimationMode: [Pixate.AnimationMode.withDuration]
 			}, { 
 				type: 'Stacking ', 
 				forType: ['reorder'], 

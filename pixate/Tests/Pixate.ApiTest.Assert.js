@@ -17,11 +17,9 @@ Pixate.ApiTest.Assert = function() {
 			return o;
 		}
 
-		var result = [];
-
-		for (var x in o) {
-			result.push({ a: x, v: o[0] });
-		}
+		var result = Pixate.toAttributeArray(o, function(o, a, v) { 
+			return { a: a, v: v }; 
+		});
 
 		result.sort(function(a, b) {
 			return a.a < b.a;

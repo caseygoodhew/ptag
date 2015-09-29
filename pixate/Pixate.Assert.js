@@ -55,7 +55,7 @@ Pixate.Assert = function() {
 		},
 
 		isAnimation: function(animation, argument) {
-			return this.fail(typeof(animation) === 'object' && animation.isAnimation, 'Argument is not an animation.');
+			return this.fail(!!Pixate.resolveAnimationType(animation.type), argument, 'Argument is not an animation.');
 		},
 
 		isConfig: function(propertySetName, context, config, argument, exclude) {

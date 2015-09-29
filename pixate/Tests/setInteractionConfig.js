@@ -307,10 +307,7 @@ Pixate.ApiTest.bundle({
 			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
 			interaction.direction = Pixate.DragDirection.vertical;
 
-			var edges = [];
-			for (var x in Pixate.Edge) {
-				edges.push(Pixate.Edge[x]);
-			}
+			var edges = Pixate.toAttributeArray(Pixate.Edge);
 
 			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
 
@@ -332,10 +329,7 @@ Pixate.ApiTest.bundle({
 			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'drag');
 			interaction.direction = Pixate.DragDirection.vertical;
 
-			var edges = [];
-			for (var x in Pixate.Edge) {
-				edges.push(Pixate.Edge[x]);
-			}
+			var edges = Pixate.toAttributeArray(Pixate.Edge);
 
 			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
 
@@ -356,10 +350,7 @@ Pixate.ApiTest.bundle({
 
 			var interaction = Pixate.createInteraction(Pixate.createLayer('test'), 'scroll');
 			
-			var edges = [];
-			for (var x in Pixate.PagingMode) {
-				edges.push(Pixate.PagingMode[x]);
-			}
+			var edges = Pixate.toAttributeArray(Pixate.Edge);
 
 			Pixate.each(edges.concat([null, undefined, 4, true, 'bob']), function(value) {
 

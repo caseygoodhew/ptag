@@ -24,6 +24,17 @@ Pixate.Utils = {
 		return map;
 	},
 
+	toAttributeArray: function(obj, func, scope) {
+		func = func || function(obj, attr, value) { return value; }
+
+		var result = [];
+		for (var attr in obj) {
+			result.push(func.call(scope || this, obj, attr, obj[attr]));
+		}
+
+		return result;
+	},
+
 	include: function(source, paramInclude) {
 
 		var include = Pixate.map(paramInclude);
@@ -177,7 +188,6 @@ Pixate.Utils = {
 
 	resolveInteractionType: function(type) {
 
-
 		if (typeof type === 'string') {
 			if (Pixate.Api.Types.Interaction[type]) {
 				return Pixate.Api.Types.Interaction[type];
@@ -213,6 +223,27 @@ Pixate.Utils = {
 						event: x, 
 						canAnimate: interactionEvent.canAnimate !== false 
 					};
+				}
+			}
+		}
+	},
+
+	resolveAnimationType: function(type) {
+
+		if (typeof type === 'string') {
+			if (Pixate.Api.Types.Animation[type]) {
+				return Pixate.Api.Types.Animation[type];
+			} else {
+				for (var x in Pixate.Api.Types.Animation) {
+					if (type === Pixate.Api.Types.Animation[x].type) {
+						return Pixate.Api.Types.Animation[x];
+					}
+				}
+			}
+		} else if (typeof type === 'object') {
+			for (var x in Pixate.Api.Types.Animation) {
+				if (type === Pixate.Api.Types.Animation[x]) {
+					return type;
 				}
 			}
 		}

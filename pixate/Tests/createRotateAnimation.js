@@ -1,7 +1,7 @@
 'use strict';
 
 Pixate.ApiTest.bundle({
-	createMoveAnimation: [{
+	createRotateAnimation: [{
 		name: 'creates animation',
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
@@ -10,7 +10,7 @@ Pixate.ApiTest.bundle({
 
 			Assert.isNotNullOrUndefined(interaction, 'Expected interaction to exist');
 
-			var animation = Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap'));
+			var animation = Pixate.createRotateAnimation(layer, Pixate.basedOn(layer, 'tap'));
 
 			if (Assert.isNotNullOrUndefined(animation, 'Expected animation to exist')) {
 
@@ -19,8 +19,8 @@ Pixate.ApiTest.bundle({
 				}
 
 				Assert.isNotNullOrUndefined(animation.id, 'Expected id to be set');
-				Assert.areEqual(Pixate.Api.Types.Animation.Move.type, animation.type, 'Unexpected animation type "'+animation.type+'"');
-				Assert.areEqual(Pixate.Api.Types.Animation.Move.defaultName, animation.name, 'Unexpected animation name "'+animation.name+'"');
+				Assert.areEqual(Pixate.Api.Types.Animation.Rotate.type, animation.type, 'Unexpected animation type "'+animation.type+'"');
+				Assert.areEqual(Pixate.Api.Types.Animation.Rotate.defaultName, animation.name, 'Unexpected animation name "'+animation.name+'"');
 				Assert.areEqual(Pixate.AnimationMode.withDuration, animation.animates, 'Unexpected animation mode "'+animation.animates+'"');
 				Assert.isTrue(Pixate.isArray(animation.conditions), 'Expected conditions to be an array');
 			}
@@ -28,7 +28,7 @@ Pixate.ApiTest.bundle({
 	}, {
 		name: 'does not create animation without layer',
 		test: function(Assert) {
-			var animation = Pixate.createMoveAnimation(null, { });
+			var animation = Pixate.createRotateAnimation(null, { });
 
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
@@ -37,7 +37,7 @@ Pixate.ApiTest.bundle({
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
-			var animation = Pixate.createMoveAnimation(layer);
+			var animation = Pixate.createRotateAnimation(layer);
 
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
@@ -46,7 +46,7 @@ Pixate.ApiTest.bundle({
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
-			var animation = Pixate.createMoveAnimation(layer, { });
+			var animation = Pixate.createRotateAnimation(layer, { });
 
 			Assert.isNullOrUndefined(animation, 'Expected animation to be null or undefined');
 		}
@@ -55,7 +55,7 @@ Pixate.ApiTest.bundle({
 		test: function(Assert) {
 			var layer = Pixate.createLayer('layer');
 			
-			var animation = Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap'));
+			var animation = Pixate.createRotateAnimation(layer, Pixate.basedOn(layer, 'tap'));
 
 			Assert.isNullOrUndefined(animation, 'Expected animation to be created');
 		}

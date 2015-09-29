@@ -5,27 +5,50 @@ Pixate.CommandLogger = function() {
 	var container = document.createElement('div');
 	var count = 1;
 
-	var formatArgument = function(argument) {
+	var formatArgument = function(argument, objectStack) {
 		var markup = [];
+
+		objectStack = objectStack || [];
 
 		switch (typeof argument) {
 			case 'object': 
+				
+				objectStack.push(argument);
+				
 				if (argument === null) {
 					markup.push('null');
 				} else if (Pixate.isArray(argument)) {
+				
 					markup.push('[');
+					
 					Pixate.each(argument, function(arg) {
-						markup.push(formatArgument(arg));
+						if (objectStack.indexOf(arg) !== -1) {
+							markup.push('...');
+						} else {
+							markup.push(formatArgument(arg, objectStack));
+						}
 					});
+					
 					markup.push(']');
 				} else {
+					
 					markup.push('{');
 					var attributes = [];
 
 					for (var x in argument) {
-						attributes.push(' ' + x + ': ' + formatArgument(argument[x]));
+						if (objectStack.indexOf(argument[x]) !== -1) {
+							if (argument[x]._id) {
+								attributes.push(' ' + x + ': { ..., _id: ' + "'"+argument[x]._id+"'" + ', ... }');
+							} else if (argument[x].id) {
+								attributes.push(' ' + x + ': { ..., id: ' + "'"+argument[x].id+"'" + ', ... }');
+							} else {
+								attributes.push(' ' + x + ': ...');
+							}
+						} else {
+							attributes.push(' ' + x + ': ' + formatArgument(argument[x], objectStack));
+						}
 					}
-					markup.push(attributes.join(','));
+					markup.push(attributes.join(', '));
 					markup.push(' }');
 				}
 
@@ -44,7 +67,7 @@ Pixate.CommandLogger = function() {
 				markup.push(argument);
 		}
 
-		return markup.join('');
+		return markup.join(' ');
 	}
 
 	var commandCount = 0;
