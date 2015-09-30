@@ -86,6 +86,10 @@ Pixate.Assert = function() {
 
 						aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" of type "'+(context||{}).type+'" is not in forType ('+propertySet[x].forType.join()+')') && aggregateResult;
 
+					} else if (propertySet[x].forInteraction && !Pixate.contains(propertySet[x].forInteraction, Pixate.resolveInteractionEvent((context||{ basedOn: {} }).basedOn.event).interaction.type)) {
+
+						aggregateResult = this.fail(false, subargument, 'Attribute "'+x+'" in property set "'+propertySetName+'" of type "'+(context||{}).type+'" is not in forInteraction ('+propertySet[x].forInteraction.join()+')') && aggregateResult;
+
 					} else {
 
 						if (propertySet[x].validator) {
@@ -146,6 +150,10 @@ Pixate.Assert = function() {
 				}
 			}
 
+			if (propertySetName === 'Animation' && config.referenceEdge) {
+				//if (config.referenceEdge === Pixate.Edge.top) { debugger; }
+			}
+
 			return aggregateResult;
 		},
 
@@ -180,7 +188,7 @@ Pixate.Assert = function() {
 
 			var eventResult = this.fail(!!interactionEvent, argument + '.basedOn.event', 'Could not resolve interaction event');
 			if (eventResult) { 
-				eventResult = this.fail(interactionEvent.canAnimate !== false, argument + '.basedOn.event', 'Event ('+interactionEvent.event+') cannot be used for animations');
+				eventResult = this.fail(interactionEvent.canAnimate !== false, argument + '.basedOn.event', 'Event ('+(interactionEvent.event.name||interactionEvent.event)+') cannot be used for animations');
 			}
 
 			var sourceResult = this.fail(!!source, argument + '.basedOn.source', 'Could not resolve source'); 

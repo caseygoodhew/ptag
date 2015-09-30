@@ -46,17 +46,29 @@ Pixate.ApiTest.bundle({
 				return null;
 			},
 
-			createAnimations: function(layer) {
-				Pixate.createTapInteraction(layer);
+			createAnimations: function(layer, config) {
+				
+				config = config || {};
+				config.interactionType = config.interactionType || Pixate.Api.Types.Interaction.Tap;
+
+				if (!config.event) {
+					var events = Pixate.toAttributeArray(config.interactionType.events);
+					if (events[0].canAnimate === false) {
+						events.splice(0, 1);
+					}
+					config.event = events[0].name || events[0];
+				}
+
+				Pixate.createInteraction(layer, config.interactionType);
 
 				return {
-				    move: Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    rotate: Pixate.createRotateAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    scale: Pixate.createScaleAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    fade: Pixate.createFadeAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    color: Pixate.createColorAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    image: Pixate.createImageAnimation(layer, Pixate.basedOn(layer, 'tap')),
-				    reorder: Pixate.createReorderAnimation(layer, Pixate.basedOn(layer, 'tap'))
+				    move: Pixate.createMoveAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    rotate: Pixate.createRotateAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    scale: Pixate.createScaleAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    fade: Pixate.createFadeAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    color: Pixate.createColorAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    image: Pixate.createImageAnimation(layer, Pixate.basedOn(layer, config.event)),
+				    reorder: Pixate.createReorderAnimation(layer, Pixate.basedOn(layer, config.event))
 				};
 			},
 
@@ -81,7 +93,7 @@ Pixate.ApiTest.bundle({
 					config[attribute] = value;
 					
 					Pixate.setAnimationConfig(animation, config);
-					Assert.areSame(value, animation[attribute], 'Expected '+attribute+' to be changed ('+value+')');
+					Assert.areSame(value, animation[attribute], 'Expected '+attribute+' to be changed ('+animation.type+', '+value+')');
 				});
 			},
 
@@ -89,13 +101,13 @@ Pixate.ApiTest.bundle({
 				
 				var originalValue = animation[attribute];
 				var config = {};
-					
+				
 				Pixate.each(values, function(value) {
 									
 					config[attribute] = value;
 					
 					Pixate.setAnimationConfig(animation, config);
-					Assert.areSame(originalValue, animation[attribute], 'Expected '+attribute+' to be unchanged ('+value+')');
+					Assert.areSame(originalValue, animation[attribute], 'Expected '+attribute+' to be unchanged ('+animation.type+', '+value+')');
 				});
 			}
 		}
@@ -190,7 +202,7 @@ Pixate.ApiTest.bundle({
 			});
 		}
 	}, {
-		name: 'can set animates',
+		name: 'can set animates as expected',
 		test: function(Assert, context) {
 			var layer = Pixate.createLayer('test');
 			
@@ -200,14 +212,41 @@ Pixate.ApiTest.bundle({
 
 			context.each(result, function(animation) {
 				
-				Assert.isNotNullOrUndefined(animation.animates, 'Expected animates to be set');				
+				Assert.isNotNullOrUndefined(animation.animates, 'Expected animates to be set');	
+				context.assertNotSettable(Assert, animation, 'animates', [undefined, null, true, false, 0, 1, -1, '', {}, [], Pixate.id()]);		
 				context.assertSettable(Assert, animation, 'animates', testValues);
+			});
+		}
+	}, {
+		name: 'can set referenceEdge as expected',
+		when: function() { return !Pixate.supressLongTests; },
+		test: function(Assert, context) {
+			var layer = Pixate.createLayer('test');
+
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			var testValues = Pixate.toAttributeArray(Pixate.Edge);
+
+			Pixate.each(interactionTypes, function(interactionType) {
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				context.each(result, function(animation) {
+					
+					//Assert.isNotNullOrUndefined(animation.referenceEdge, 'Expected referenceEdge to be set');	
+					
+					context.assertNotSettable(Assert, animation, 'referenceEdge', [undefined, null, true, false, 0, 1, -1, '', {}, [], Pixate.id()]);		
+					
+					if (interactionType === Pixate.Api.Types.Interaction.Drag) {
+						context.assertSettable(Assert, animation, 'referenceEdge', testValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'referenceEdge', testValues);
+					}
+				});
 			});
 		}
 	}]
 });
 /*
-animates: { type: 'AnimationMode' },
 referenceEdge: { type: 'Edge', forInteraction: ['drag'] },
 begin: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },
 end: { type: 'number', forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.continuousWithRate] },

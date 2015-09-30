@@ -217,10 +217,10 @@ Pixate.Utils = {
 				
 				var interactionEvent = Pixate.Api.Types.Interaction[type].events[x];
 				
-				if (interactionEvent === x || interactionEvent.name === x) {
+				if (interactionEvent === event || interactionEvent.name === event) {
 					return { 
 						interaction: Pixate.Api.Types.Interaction[type], 
-						event: x, 
+						event: Pixate.Api.Types.Interaction[type].events[x], 
 						canAnimate: interactionEvent.canAnimate !== false 
 					};
 				}
