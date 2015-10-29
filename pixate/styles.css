@@ -99,3 +99,8 @@ html, a {
 .test-group-title {
 	font-weight: bold;
 }
+
+.test-pending {
+	font-style: italic;
+	color: #777777;
+}

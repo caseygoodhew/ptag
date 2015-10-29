@@ -130,4 +130,3 @@ Pixate.Api.Properties = function(){
 
 Pixate.apply(Pixate.Api.Properties.Animation, Pixate.Api.Properties.AnimationCondition);
 
-

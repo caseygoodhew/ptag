@@ -77,7 +77,7 @@ Pixate.ApiTest = function() {
 							testResult.push('<div class="test">');
 							testResult.push('<span class="test-name"><a href="#'+generateId(x, test)+'">'+test.name+'</a></span>');
 							testResult.push('<span class="test-spacing">: </span>');
-							testResult.push('<span id="'+testId+'" class="test-pending"></span>');
+							testResult.push('<span id="'+testId+'" class="test-pending">Test running...</span>');
 							testResult.push('</div>');
 							
 							fullResult.push(testResult.join(''));
