@@ -364,35 +364,526 @@ Pixate.ApiTest.bundle({
 				});
 			});
 		}
+	}, {
+		name: 'can set easing as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				context.each(result, function(animation) {
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertSettable(Assert, animation, 'easing', Pixate.toAttributeArray(Pixate.EasingCurve));
+					context.assertNotSettable(Assert, animation, 'easing', [0, 0.5, 100, -100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'easing', Pixate.toAttributeArray(Pixate.EasingCurve));
+					context.assertNotSettable(Assert, animation, 'easing', [0, 0.5, 100, -100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'easing', Pixate.toAttributeArray(Pixate.EasingCurve));
+					context.assertNotSettable(Assert, animation, 'easing', [0, 0.5, 100, -100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+				});
+			});
+		}
+	}, {
+		name: 'can set springTension as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				context.each(result, function(animation) {
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertSettable(Assert, animation, 'springTension', [0, 0.5, 100]);
+					context.assertNotSettable(Assert, animation, 'springTension', [-1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'springTension', [0, 0.5, 100, -1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'springTension', [0, 0.5, 100, -1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set springFriction as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				context.each(result, function(animation) {
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertSettable(Assert, animation, 'springFriction', [0, 0.5, 100]);
+					context.assertNotSettable(Assert, animation, 'springFriction', [-1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'springFriction', [0, 0.5, 100, -1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'springFriction', [0, 0.5, 100, -1, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set toX as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Move.type,
+					Pixate.Api.Types.Animation.Rotate.type,
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toX', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toX', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toX', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toX', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'toX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set toY as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Move.type,
+					Pixate.Api.Types.Animation.Rotate.type,
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toY', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toY', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toY', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toY', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'toY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		} 
+	}, {
+		name: 'can set toZ as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toZ', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toZ', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'toZ', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'toZ', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'toZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					context.assertNotSettable(Assert, animation, 'toZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set rateX as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertNotSettable(Assert, animation, 'rateX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'rateX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'rateX', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'rateX', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'rateX', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+				});
+			});
+		}
+	}, {
+		name: 'can set rateY as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertNotSettable(Assert, animation, 'rateY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'rateY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'rateY', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'rateY', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'rateY', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+				});
+			});
+		}
+	}, {
+		name: 'can set rateZ as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					context.assertNotSettable(Assert, animation, 'rateZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					context.assertNotSettable(Assert, animation, 'rateZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'rateZ', [-100, 0, 0.5, 100]);
+						context.assertNotSettable(Assert, animation, 'rateZ', [undefined, null, true, false, '', {}, [], Pixate.id()]);
+					} else {
+						context.assertNotSettable(Assert, animation, 'rateZ', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					}
+				});
+			});
+		}
+	}, {
+		name: 'can set anchorX as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validValues = Pixate.toAttributeArray(Pixate.AnchorX);
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type,
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorX', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorX', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorX', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorX', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorX', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorX', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorX', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorX', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorX', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set anchorY as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validValues = Pixate.toAttributeArray(Pixate.AnchorY);
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type,
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorY', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorY', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorY', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorY', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorY', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorY', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorY', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorY', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorY', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set anchorZ as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validValues = Pixate.toAttributeArray(Pixate.AnchorZ);
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type,
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorZ', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorZ', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorZ', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorZ', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorZ', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorZ', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'anchorZ', validValues);
+					} else {
+						context.assertNotSettable(Assert, animation, 'anchorZ', validValues);
+					}
+					context.assertNotSettable(Assert, animation, 'anchorZ', [-100, 0.4, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set dimension as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Rotate.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					}
+					context.assertNotSettable(Assert, animation, 'dimension', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					}
+					context.assertNotSettable(Assert, animation, 'dimension', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'dimension', Pixate.toAttributeArray(Pixate.DimensionType));
+					}
+					context.assertNotSettable(Assert, animation, 'dimension', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
+	}, {
+		name: 'can set scales as expected',
+		when: function() { return !Pixate.suppressLongTests; },
+		test: function(Assert, context) {
+			var interactionTypes = Pixate.toAttributeArray(Pixate.Api.Types.Interaction);
+			
+			Pixate.each(interactionTypes, function(interactionType) {
+				var layer = Pixate.createLayer('test-'+interactionType.type);
+
+				var result = context.createAnimations(layer, { interactionType: interactionType });
+
+				var validTypes = Pixate.map([
+					Pixate.Api.Types.Animation.Scale.type
+				]);
+
+				context.each(result, function(animation) {
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.withDuration });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					}
+					context.assertNotSettable(Assert, animation, 'scales', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousToValue });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					}
+					context.assertNotSettable(Assert, animation, 'scales', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+					
+					Pixate.setAnimationConfig(animation, { animates: Pixate.AnimationMode.continuousWithRate });
+					if (validTypes[animation.type]) {
+						context.assertSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					} else {
+						context.assertNotSettable(Assert, animation, 'scales', Pixate.toAttributeArray(Pixate.ScaleType));
+					}
+					context.assertNotSettable(Assert, animation, 'scales', [-100, 0, 0.5, 100, undefined, null, true, false, '', {}, [], Pixate.id()]);
+				});
+			});
+		}
 	}]
 });
 
 
 /*
-duration: [
-	{ type: 'number', forType: ['image', 'color'], min: 0, max: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
-	{ type: 'number', forAnimationMode: [Pixate.AnimationMode.withDuration] }
-],
-delay: [
-	{ type: 'number', forType: ['image', 'color'], min: 0, max: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
-	{ type: 'number', forAnimationMode: [Pixate.AnimationMode.withDuration] }
-],
-easing: { type: 'EasingCurve', forAnimationMode: [Pixate.AnimationMode.withDuration] },
-springTension: { type: 'number', min: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
-springFriction: { type: 'number', min: 0, forAnimationMode: [Pixate.AnimationMode.withDuration] },
-toX: { type: 'number', forType: ['move', 'rotate', 'scale'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
-toY: { type: 'number', forType: ['move', 'rotate', 'scale'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
-toZ: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousToValue, Pixate.AnimationMode.withDuration] },
-rateX: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
-rateY: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
-rateZ: { type: 'number', forType: ['rotate'], forAnimationMode: [Pixate.AnimationMode.continuousWithRate] },
-anchorX: { type: 'AnchorX', forType: ['rotate', 'scale'] },
-anchorY: { type: 'AnchorY', forType: ['rotate', 'scale'] },
-anchorZ: { type: 'AnchorZ', forType: ['rotate', 'scale'] },
-dimension: { type: 'DimensionType', forType: ['rotate'] },
 backLayer: { type: 'Layer', forType: ['rotate'] },
 target: { type: 'Layer', forType: ['reorder'] },
-scales: { type: 'ScaleType', forType: ['scale'] }
 
 
 condition: { type: 'string', forAnimationMode: [Pixate.AnimationMode.withDuration] },
